@@ -1,0 +1,132 @@
+import { prisma } from '@repo/db'
+import { NextResponse } from 'next/server'
+import { checkAuthorization } from '../../lib/validators/user.validator'
+import { validateSchema } from '../../lib/validators/schema.validator'
+import { createBoardSchema } from '../../lib/validators.schema/auth.schema'
+import z, { ZodError } from 'zod'
+
+// Get all boards for the user
+export async function GET() {
+  try {
+    const session = await checkAuthorization()
+
+    const userBoards = await prisma.boardMember.findMany({
+      //@ts-ignore
+      where: { userId: session.user.id },
+      include: {
+        board: true,
+      },
+      orderBy: {
+        board: {
+          updatedAt: 'desc',
+        },
+      },
+    })
+
+    const formattedBoardInfo = userBoards.map(({ board, ...members }) => {
+      return { ...members, boardName: board.name }
+    })
+
+    return NextResponse.json({
+      data: formattedBoardInfo,
+    })
+  } catch (err) {
+    if (err instanceof Error && err.message == 'UNAUTHORIZED') {
+      return NextResponse.json(
+        {
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'You must be logged in !',
+          },
+        },
+        { status: 401 },
+      )
+    }
+    return NextResponse.json(
+      {
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Something went wrong',
+        },
+      },
+      { status: 500 },
+    )
+  }
+}
+
+// create board with user as the owner
+
+export async function POST(req: Request) {
+  try {
+    const session = await checkAuthorization()
+    const reqBody = await req.json()
+
+    const validated = validateSchema(createBoardSchema, { body: reqBody })
+    const { name } = validated.body
+
+    const result = await prisma.$transaction(async (tx) => {
+      const board = await tx.board.create({
+        data: {
+          name: name,
+          //@ts-ignore
+          ownerId: session.user.id,
+        },
+      })
+
+      await tx.boardMember.create({
+        data: {
+          boardId: board.id,
+          //@ts-ignore
+          userId: session.user.id,
+          role: 'MANAGER',
+        },
+      })
+
+          await tx.boardColumn.create({
+        data: {
+          boardId: board.id,
+          name: "Not Started",
+          order: 1,
+          isDefault: true,
+        },
+      });
+
+      return board
+    })
+
+    return NextResponse.json({ data: result }, { status: 201 })
+  } catch (err) {
+    if (err instanceof Error && err.message == 'UNAUTHORIZED') {
+      return NextResponse.json(
+        {
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'You must be logged in !',
+          },
+        },
+        { status: 401 },
+      )
+    }
+
+    if (err instanceof ZodError) {
+      const errorTree = z.treeifyError(err)
+
+      return NextResponse.json(
+        {
+          error: 'Invalid inputs',
+        },
+        { status: 400 },
+      )
+    }
+
+    return NextResponse.json(
+      {
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Something went wrong',
+        },
+      },
+      { status: 500 },
+    )
+  }
+}
