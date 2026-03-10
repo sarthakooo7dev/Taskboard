@@ -3,8 +3,9 @@ import { newTaskSchema } from '../../../../lib/validators.schema/auth.schema'
 import { checkBoardAccess } from '../../../../lib/validators/membership.validator'
 import { validateSchema } from '../../../../lib/validators/schema.validator'
 import { checkAuthorization } from '../../../../lib/validators/user.validator'
-import { prisma } from '@repo/db'
+import { ActivityType, prisma } from '@repo/db'
 import { z, ZodError } from 'zod'
+import { activityService } from '../../../../services/activity.service'
 
 export async function POST(
   req: Request,
@@ -66,6 +67,16 @@ export async function POST(
         columnId: defaultColumn.id,
         createdById: currentUserID,
         assignedToId,
+      },
+    })
+
+    await activityService.logActivity({
+      boardId: task.boardId,
+      actorId: currentUserID,
+      type: ActivityType.TASK_CREATED,
+      entityId: task.id,
+      metadata: {
+        title: task.title,
       },
     })
 

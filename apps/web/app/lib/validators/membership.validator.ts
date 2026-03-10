@@ -8,6 +8,11 @@ export async function checkBoardAccess(boardId: string, userId: string) {
         userId,
       },
     },
+    include: {
+      user: {
+        select: { id: true, name: true, avatar: true },
+      },
+    },
   })
 
   return membership

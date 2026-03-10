@@ -34,6 +34,7 @@ model User {
   assignedTasks Task[]        @relation("TaskAssignee")
   ownedBoards   Board[]       @relation("BoardOwner")
   comments      Comment[]
+  activities    Activity[]
 }
 
 model Board {
@@ -43,10 +44,11 @@ model Board {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt // auto-managed timestamp
 
-  owner   User          @relation("BoardOwner", fields: [ownerId], references: [id])
-  members BoardMember[]
-  columns BoardColumn[]
-  tasks   Task[]
+  owner      User          @relation("BoardOwner", fields: [ownerId], references: [id])
+  members    BoardMember[]
+  columns    BoardColumn[]
+  tasks      Task[]
+  activities Activity[]
 }
 
 model BoardMember {
@@ -108,4 +110,28 @@ model Comment {
 
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id])
+}
+
+enum ActivityType {
+  TASK_CREATED
+  TASK_MOVED
+  TASK_UPDATED
+  TASK_DELETED
+  TASK_ASSIGNED
+  COMMENT_CREATED
+}
+
+model Activity {
+  id        String       @id @default(uuid())
+  boardId   String
+  actorId   String
+  type      ActivityType
+  entityId  String
+  metadata  Json?
+  createdAt DateTime     @default(now())
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  actor User  @relation(fields: [actorId], references: [id])
+
+  @@index([boardId, createdAt])
 }

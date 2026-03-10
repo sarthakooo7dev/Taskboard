@@ -1,10 +1,11 @@
-import { prisma } from '@repo/db'
+import { ActivityType, prisma } from '@repo/db'
 import { NextResponse } from 'next/server'
 import { checkBoardAccess } from '../../../../../../lib/validators/membership.validator'
 import { checkAuthorization } from '../../../../../../lib/validators/user.validator'
 import { newCommentSchema } from '../../../../../../lib/validators.schema/auth.schema'
 import { validateSchema } from '../../../../../../lib/validators/schema.validator'
 import { z, ZodError } from 'zod'
+import { activityService } from '../../../../../../services/activity.service'
 
 export async function GET(
   req: Request,
@@ -96,23 +97,23 @@ export async function POST(
     //@ts-ignore
     const currentUserID = session?.user?.id
 
-    // 1️⃣ Membership check
-    const membership = await checkBoardAccess(boardId, currentUserID)
+    // Membership check
+    const checkMembership = await checkBoardAccess(boardId, currentUserID)
 
-    if (!membership || membership.role === 'VIEWER') {
+    if (!checkMembership || checkMembership.role === 'VIEWER') {
       return NextResponse.json(
         { message: 'Insufficient permission.' },
         { status: 403 },
       )
     }
 
-    // 2️⃣ Ensure task exists IN THIS BOARD
+    // Ensure task exists IN THIS BOARD
     const task = await prisma.task.findFirst({
       where: {
         id: taskId,
         boardId,
       },
-      select: { id: true },
+      select: { id: true, title: true },
     })
 
     if (!task) {
@@ -122,7 +123,7 @@ export async function POST(
       )
     }
 
-    // 3️⃣ Create comment
+    // Create comment
     const comment = await prisma.comment.create({
       data: {
         message,
@@ -140,6 +141,17 @@ export async function POST(
             avatar: true,
           },
         },
+      },
+    })
+
+    await activityService.logActivity({
+      boardId: boardId,
+      actorId: currentUserID,
+      type: ActivityType.COMMENT_CREATED,
+      entityId: task.id,
+      metadata: {
+        commentedOn: task.title,
+        modifiedBy: checkMembership.user.name,
       },
     })
 

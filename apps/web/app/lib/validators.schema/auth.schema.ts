@@ -45,18 +45,20 @@ export const newTaskSchema = z.object({
 })
 
 export const updateTaskSchema = z.object({
-  body: z.object({
-    title: z.string().min(2).max(100).optional(),
-    description: z.string().trim().optional(),
-    columnId: z.string().optional(),
-    assignedToId: z.string().nullable().optional(),
-  }),
+  body: z
+    .object({
+      title: z.string().min(2).max(100).optional(),
+      description: z.string().trim().optional(),
+      columnId: z.string().optional(),
+      assignedToId: z.string().nullable().optional(),
+    })
+    .strict(),
 })
 
-export const newCommentSchema = z
-  .object({
-    body: z.object({
+export const newCommentSchema = z.object({
+  body: z
+    .object({
       message: z.string().trim().max(1500),
-    }),
-  })
-  .strict()
+    })
+    .strict(),
+})

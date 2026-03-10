@@ -3,8 +3,9 @@ import { checkBoardAccess } from '../../../../../lib/validators/membership.valid
 import { updateTaskSchema } from '../../../../../lib/validators.schema/auth.schema'
 import { validateSchema } from '../../../../../lib/validators/schema.validator'
 import { checkAuthorization } from '../../../../../lib/validators/user.validator'
-import { prisma } from '@repo/db'
+import { ActivityType, prisma } from '@repo/db'
 import { z, ZodError } from 'zod'
+import { activityService } from '../../../../../services/activity.service'
 
 export async function PATCH(
   req: Request,
@@ -31,14 +32,16 @@ export async function PATCH(
       )
     }
 
+    let columnExists
+    let assigneeMembership
     // 🔹 If column change requested → validate
     if (columnId) {
-      const columnExists = await prisma.boardColumn.findFirst({
+      columnExists = await prisma.boardColumn.findFirst({
         where: {
           id: columnId,
           boardId,
         },
-        select: { id: true },
+        select: { id: true, name: true },
       })
 
       if (!columnExists) {
@@ -50,7 +53,7 @@ export async function PATCH(
     }
 
     if (assignedToId) {
-      const assigneeMembership = await checkBoardAccess(boardId, assignedToId)
+      assigneeMembership = await checkBoardAccess(boardId, assignedToId)
 
       if (!assigneeMembership) {
         return NextResponse.json(
@@ -78,6 +81,50 @@ export async function PATCH(
         { message: 'Task not found in this board.' },
         { status: 404 },
       )
+    }
+
+    // TASK_MOVED
+    if (columnExists) {
+      await activityService.logActivity({
+        boardId: boardId,
+        actorId: currentUserID,
+        type: ActivityType.TASK_MOVED,
+        entityId: taskId,
+        metadata: {
+          toStatus: columnExists!.name,
+          modifiedBy: checkMembership.user.name,
+        },
+      })
+    }
+
+    // TASK_ASSIGNED
+    if (assignedToId) {
+      await activityService.logActivity({
+        boardId: boardId,
+        actorId: currentUserID,
+        type: ActivityType.TASK_ASSIGNED,
+        entityId: taskId,
+        metadata: {
+          assignedTo: assigneeMembership?.user.name,
+          assigneeRole: assigneeMembership?.role,
+          modifiedBy: checkMembership.user.name,
+        },
+      })
+    }
+
+    //TASK_UPDATED
+    if (title || description) {
+      await activityService.logActivity({
+        boardId: boardId,
+        actorId: currentUserID,
+        type: ActivityType.TASK_UPDATED,
+        entityId: taskId,
+        metadata: {
+          title,
+          description,
+          modifiedBy: checkMembership.user.name,
+        },
+      })
     }
 
     return NextResponse.json(
@@ -148,6 +195,7 @@ export async function DELETE(
       },
       select: {
         id: true,
+        title: true,
         assignedToId: true,
       },
     })
@@ -176,12 +224,19 @@ export async function DELETE(
       where: { id: task.id },
     })
 
+    await activityService.logActivity({
+      boardId,
+      actorId: currentUserID,
+      type: ActivityType.TASK_DELETED,
+      entityId: task.id,
+      metadata: { title: task.title, deletedBy: checkMembership.user.name },
+    })
+
     return NextResponse.json(
       { message: 'Task deleted successfully.' },
       { status: 200 },
     )
   } catch (err) {
-
     if (err instanceof Error && err.message == 'UNAUTHORIZED') {
       return NextResponse.json(
         {
