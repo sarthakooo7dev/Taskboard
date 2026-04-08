@@ -6,7 +6,7 @@ import {
   leaveBoard,
 } from './managers/presenceManager'
 import { startNotificationSubscriber } from './subscriber'
-
+import { Redis } from 'ioredis'
 const server = http.createServer()
 
 const io = new Server(server, {
@@ -15,6 +15,10 @@ const io = new Server(server, {
   },
 })
 
+const redis = new Redis({
+  host: '127.0.0.1',
+  port: 6379,
+})
 startNotificationSubscriber()
 
 io.on('connection', (socket) => {
@@ -23,6 +27,8 @@ io.on('connection', (socket) => {
   socket.on('JOIN_BOARD', ({ boardId, userId }) => {
     joinBoard(socket.id, userId, boardId)
     socket.join(boardId)
+    addUsersToredis(boardId, userId)
+
     const users = getBoardPresence(boardId)
     io.to(boardId).emit('PRESENCE_UPDATE', users)
   })
@@ -35,12 +41,22 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     const info = leaveBoard(socket.id)
     if (info?.boardId) {
+      removeUsersToredis(info.boardId, info.userId)
       const users = getBoardPresence(info.boardId)
       io.to(info.boardId).emit('PRESENCE_UPDATE', users)
     }
     console.log('user disconnected:', socket.id)
   })
 })
+
+// adds user to redis (presence gets available to workers through it)
+async function addUsersToredis(boardId: string, userId: string) {
+  await redis.sadd(`board:${boardId}:users`, userId)
+}
+
+async function removeUsersToredis(boardId: string, userId: string) {
+  await redis.srem(`board:${boardId}:users`, userId)
+}
 
 server.listen(4000, () => {
   console.log('Realtime server running on port 4000')

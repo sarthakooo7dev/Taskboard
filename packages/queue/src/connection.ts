@@ -9,3 +9,7 @@ export const connection = new Redis({
 export async function publishNotification(userId: string, data: any) {
   await connection.publish(`user:${userId}`, JSON.stringify(data))
 }
+
+export async function usersViewingBoard(boardId: string) {
+  return await connection.smembers(`board:${boardId}:users`)
+}

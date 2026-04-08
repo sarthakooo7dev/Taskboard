@@ -1,6 +1,6 @@
 import { createNotification } from '../../db/src/notificationServices/notification.services'
 import { AppEvent, NotifyTypes, TaskCommentEvent_0 } from '../../types'
-import { publishNotification } from '../src/connection'
+import { publishNotification, usersViewingBoard } from '../src/connection'
 
 export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
   const {
@@ -8,10 +8,14 @@ export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
     senderId,
     taskId,
     type,
+    boardId,
     creator,
     info,
     mentionedIds,
   } = jobData
+
+  const currentViewers = await usersViewingBoard(boardId)
+  console.log('RAW:', currentViewers)
 
   for (const userId of receiverIds) {
     // CRITICAL → must succeed (no try/catch)

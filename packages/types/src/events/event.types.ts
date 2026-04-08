@@ -5,6 +5,7 @@ export enum EventType {
 
 export type TaskCommentEvent_0 = {
   type: EventType.TASK_COMMENT_CREATED
+  boardId: string
   creator: string
   info: Record<string, any>
   taskId: string

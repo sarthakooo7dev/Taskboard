@@ -181,6 +181,7 @@ export async function POST(
 
     eventDispatcher({
       type: EventType.TASK_COMMENT_CREATED,
+      boardId,
       creator: comment.user.name,
       info: { title: task.title },
       taskId: task.id,
