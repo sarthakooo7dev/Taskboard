@@ -59,6 +59,7 @@ export const newCommentSchema = z.object({
   body: z
     .object({
       message: z.string().trim().max(1500),
+      mentionedUserIds: z.array(z.string()),
     })
     .strict(),
 })

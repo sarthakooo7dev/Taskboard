@@ -5,6 +5,7 @@ import {
   joinBoard,
   leaveBoard,
 } from './managers/presenceManager'
+import { startNotificationSubscriber } from './subscriber'
 
 const server = http.createServer()
 
@@ -14,6 +15,8 @@ const io = new Server(server, {
   },
 })
 
+startNotificationSubscriber()
+
 io.on('connection', (socket) => {
   console.log('user connected:', socket.id)
   // user joins a board
@@ -22,6 +25,11 @@ io.on('connection', (socket) => {
     socket.join(boardId)
     const users = getBoardPresence(boardId)
     io.to(boardId).emit('PRESENCE_UPDATE', users)
+  })
+
+  socket.on('REGISTER', ({ userId }) => {
+    socket.join(userId)
+    console.log('User joined personal room:', userId)
   })
 
   socket.on('disconnect', () => {
@@ -37,3 +45,5 @@ io.on('connection', (socket) => {
 server.listen(4000, () => {
   console.log('Realtime server running on port 4000')
 })
+
+export { io }

@@ -135,3 +135,21 @@ model Activity {
 
   @@index([boardId, createdAt])
 }
+
+enum NotifyType {
+  TASK_COMMENT_CREATED
+  TASK_ASSIGNED
+}
+
+model Notification {
+  id        String     @id @default(cuid())
+  userId    String
+  actorId   String
+  type      NotifyType
+  entityId  String
+  read      Boolean    @default(false)
+  createdAt DateTime   @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, read])
+}

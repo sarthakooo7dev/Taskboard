@@ -1,4 +1,4 @@
-import { ActivityType, prisma } from '@repo/db'
+import { prisma } from '@repo/db'
 import { NextResponse } from 'next/server'
 import { checkBoardAccess } from '../../../../../../lib/validators/membership.validator'
 import { checkAuthorization } from '../../../../../../lib/validators/user.validator'
@@ -6,6 +6,8 @@ import { newCommentSchema } from '../../../../../../lib/validators.schema/auth.s
 import { validateSchema } from '../../../../../../lib/validators/schema.validator'
 import { z, ZodError } from 'zod'
 import { activityService } from '../../../../../../services/activity.service'
+import { ActivityTypes, EventType, NotifyTypes } from '@repo/types'
+import { eventDispatcher } from '@repo/db'
 
 export async function GET(
   req: Request,
@@ -92,7 +94,7 @@ export async function POST(
       body: reqBody,
     })
 
-    const { message } = validated.body
+    const { message, mentionedUserIds } = validated.body
 
     //@ts-ignore
     const currentUserID = session?.user?.id
@@ -113,7 +115,7 @@ export async function POST(
         id: taskId,
         boardId,
       },
-      select: { id: true, title: true },
+      select: { id: true, title: true, assignedToId: true, createdById: true },
     })
 
     if (!task) {
@@ -147,12 +149,44 @@ export async function POST(
     await activityService.logActivity({
       boardId: boardId,
       actorId: currentUserID,
-      type: ActivityType.COMMENT_CREATED,
+      type: ActivityTypes.COMMENT_CREATED,
       entityId: task.id,
       metadata: {
         commentedOn: task.title,
         modifiedBy: checkMembership.user.name,
       },
+    })
+
+    const receiverIds: string[] = []
+    if (mentionedUserIds.length > 0) {
+      const validMentions = await prisma.boardMember.findMany({
+        where: {
+          boardId,
+          userId: {
+            in: mentionedUserIds,
+          },
+        },
+        select: { userId: true },
+      })
+
+      const safeMentionIds = validMentions.map((m) => m.userId)
+      receiverIds.push(...safeMentionIds)
+    }
+
+    if (task.assignedToId) {
+      receiverIds.push(task.assignedToId)
+    } else if (task.createdById != currentUserID) {
+      receiverIds.push(task.createdById)
+    }
+
+    eventDispatcher({
+      type: EventType.TASK_COMMENT_CREATED,
+      creator: comment.user.name,
+      info: { title: task.title },
+      taskId: task.id,
+      senderId: currentUserID,
+      mentionedIds: mentionedUserIds,
+      receiverIds,
     })
 
     return NextResponse.json(comment, { status: 201 })

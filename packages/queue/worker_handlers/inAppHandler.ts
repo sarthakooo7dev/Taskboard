@@ -1,0 +1,36 @@
+import { createNotification } from '../../db/src/notificationServices/notification.services'
+import { AppEvent, NotifyTypes, TaskCommentEvent_0 } from '../../types'
+import { publishNotification } from '../src/connection'
+
+export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
+  const {
+    receiverIds,
+    senderId,
+    taskId,
+    type,
+    creator,
+    info,
+    mentionedIds,
+  } = jobData
+
+  for (const userId of receiverIds) {
+    // CRITICAL → must succeed (no try/catch)
+    const notification = await createNotification({
+      userId,
+      actorId: senderId,
+      type: NotifyTypes.TASK_COMMENT_CREATED,
+      entityId: taskId,
+    })
+    //  NON-CRITICAL → safe to fail
+    try {
+      const notifyObj_ws = { ...notification, creator, info, mentionedIds }
+      await publishNotification(userId, notifyObj_ws)
+    } catch (err) {
+      console.error('❌ WS publish failed for user:', userId, err)
+    }
+  }
+}
+
+export async function handleTaskAssignment(jobData: any) {
+  console.log(jobData + '-----handleTaskAssignment--')
+}
