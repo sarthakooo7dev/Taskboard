@@ -138,7 +138,10 @@ model Activity {
 
 enum NotifyType {
   TASK_COMMENT_CREATED
-  TASK_ASSIGNED
+  TASK_EDIT_ASSIGNMENT
+  TASK_EDIT_STATUS
+  TASK_EDIT_METADATA
+  TASK_EDIT_GENERIC
 }
 
 model Notification {

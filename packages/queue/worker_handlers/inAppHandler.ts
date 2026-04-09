@@ -35,6 +35,35 @@ export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
   }
 }
 
-export async function handleTaskAssignment(jobData: any) {
-  console.log(jobData + '-----handleTaskAssignment--')
+export async function handleTaskUpdate(jobData: any) {
+  console.log(JSON.stringify(jobData) + '-----handleTaskUpdate--')
+  const {
+    receiverIds,
+    senderId,
+    taskId,
+    type,
+    boardId,
+    creator,
+    info,
+  } = jobData
+
+  const currentViewers = await usersViewingBoard(boardId)
+  console.log('RAW:', currentViewers)
+
+  for (const userId of receiverIds) {
+    // CRITICAL → must succeed (no try/catch)
+    const notification = await createNotification({
+      userId,
+      actorId: senderId,
+      type: type,
+      entityId: taskId,
+    })
+    //  NON-CRITICAL → safe to fail
+    try {
+      const notifyObj_ws = { ...notification, creator, info }
+      await publishNotification(userId, notifyObj_ws)
+    } catch (err) {
+      console.error('❌ WS publish failed for user:', userId, err)
+    }
+  }
 }

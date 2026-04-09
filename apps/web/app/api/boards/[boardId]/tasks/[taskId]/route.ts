@@ -3,9 +3,10 @@ import { checkBoardAccess } from '../../../../../lib/validators/membership.valid
 import { updateTaskSchema } from '../../../../../lib/validators.schema/auth.schema'
 import { validateSchema } from '../../../../../lib/validators/schema.validator'
 import { checkAuthorization } from '../../../../../lib/validators/user.validator'
-import { ActivityType, prisma } from '@repo/db'
+import { ActivityType, eventDispatcher, prisma } from '@repo/db'
 import { z, ZodError } from 'zod'
 import { activityService } from '../../../../../services/activity.service'
+import { EventType } from '@repo/types'
 
 export async function PATCH(
   req: Request,
@@ -34,7 +35,7 @@ export async function PATCH(
 
     let columnExists
     let assigneeMembership
-    // 🔹 If column change requested → validate
+    // If column change requested → validate
     if (columnId) {
       columnExists = await prisma.boardColumn.findFirst({
         where: {
@@ -63,28 +64,64 @@ export async function PATCH(
       }
     }
 
-    const result = await prisma.task.updateMany({
-      where: {
-        id: taskId,
-        boardId,
-      },
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+    })
+    if (!existingTask) {
+      return NextResponse.json(
+        { message: 'Task not found in this board.' },
+        { status: 400 },
+      )
+    }
+    const isStatusChanged =
+      columnId !== undefined && columnId !== existingTask.columnId
+
+    const isTaskAssigned =
+      assignedToId !== undefined && assignedToId !== existingTask.assignedToId
+
+    const isMetadataUpdated =
+      (title !== undefined && title !== existingTask.title) ||
+      (description !== undefined && description !== existingTask.description)
+
+    // const result = await prisma.task.updateMany({
+    //   where: {
+    //     id: taskId,
+    //     boardId,
+    //   },
+    //   data: {
+    //     title,
+    //     description,
+    //     columnId,
+    //     assignedToId,
+    //   },
+    // })
+
+    const updatedTask = await prisma.task.update({
+      where: { id: taskId },
       data: {
-        title,
-        description,
-        columnId,
-        assignedToId,
+        ...(title !== undefined && { title }),
+        ...(description !== undefined && { description }),
+        ...(columnId !== undefined && { columnId }),
+        ...(assignedToId !== undefined && { assignedToId }),
       },
     })
 
-    if (result.count === 0) {
-      return NextResponse.json(
-        { message: 'Task not found in this board.' },
-        { status: 404 },
-      )
-    }
+    // if (result.count === 0) {
+    //   return NextResponse.json(
+    //     { message: 'Task not found in this board.' },
+    //     { status: 404 },
+    //   )
+    // }
 
+    // const isStatusChanged= columnId ? true : false;
+    // const isTaskAssigned= assignedToId ? true : false;
+    // const isMetadataUpdated = (title || description) ? true : false;
+
+    let changeCounter = 0
+
+    // ## -- Add activity logs...
     // TASK_MOVED
-    if (columnExists) {
+    if (isStatusChanged) {
       await activityService.logActivity({
         boardId: boardId,
         actorId: currentUserID,
@@ -95,10 +132,11 @@ export async function PATCH(
           modifiedBy: checkMembership.user.name,
         },
       })
+      changeCounter++
     }
 
     // TASK_ASSIGNED
-    if (assignedToId) {
+    if (isTaskAssigned) {
       await activityService.logActivity({
         boardId: boardId,
         actorId: currentUserID,
@@ -110,10 +148,11 @@ export async function PATCH(
           modifiedBy: checkMembership.user.name,
         },
       })
+      changeCounter++
     }
 
     //TASK_UPDATED
-    if (title || description) {
+    if (isMetadataUpdated) {
       await activityService.logActivity({
         boardId: boardId,
         actorId: currentUserID,
@@ -124,6 +163,79 @@ export async function PATCH(
           description,
           modifiedBy: checkMembership.user.name,
         },
+      })
+      changeCounter++
+    }
+
+    // ## -- Dispatch notification events...
+
+    let receiverIds: string[] = []
+    if (existingTask.createdById != currentUserID) {
+      receiverIds.push(existingTask.createdById)
+    }
+    if (
+      existingTask.assignedToId &&
+      existingTask.assignedToId != currentUserID
+    ) {
+      receiverIds.push(existingTask?.assignedToId)
+    }
+    if (assignedToId && assignedToId != currentUserID) {
+      receiverIds.push(assignedToId)
+    }
+    receiverIds = [...new Set(receiverIds)]
+
+    console.log(
+      isStatusChanged,
+      isMetadataUpdated,
+      isTaskAssigned + '##### ___receiverIds' + receiverIds,
+    )
+    if (changeCounter > 1) {
+      eventDispatcher({
+        type: EventType.TASK_EDIT_GENERIC,
+        boardId,
+        creator: checkMembership.user.name,
+        info: { isStatusChanged, isTaskAssigned, isMetadataUpdated },
+        taskId,
+        senderId: currentUserID,
+        receiverIds,
+      })
+    } else if (isStatusChanged) {
+      eventDispatcher({
+        type: EventType.TASK_EDIT_STATUS,
+        boardId,
+        creator: checkMembership.user.name,
+        info: { isStatusChanged, newStatus: columnExists?.name },
+        taskId,
+        senderId: currentUserID,
+        receiverIds,
+      })
+    } else if (isTaskAssigned && assigneeMembership) {
+      eventDispatcher({
+        type: EventType.TASK_EDIT_ASSIGNMENT,
+        boardId,
+        creator: checkMembership.user.name,
+        info: { isTaskAssigned, assignedToName: assigneeMembership.user.name },
+        taskId,
+        senderId: currentUserID,
+        receiverIds,
+      })
+    } else if (isMetadataUpdated) {
+      console.log('i raaaannnnnn isMetadataUpdated')
+
+      eventDispatcher({
+        type: EventType.TASK_EDIT_METADATA,
+        boardId,
+        creator: checkMembership.user.name,
+        info: {
+          isMetadataUpdated,
+          oldTitle: existingTask.title,
+          newTitle: updatedTask.title,
+          oldDesc: existingTask.description,
+          newDesc: updatedTask.description,
+        },
+        taskId,
+        senderId: currentUserID,
+        receiverIds,
       })
     }
 
