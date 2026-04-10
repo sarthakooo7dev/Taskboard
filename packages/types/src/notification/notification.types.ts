@@ -11,4 +11,5 @@ export type CreateNotificationInput = {
   actorId: string
   type: NotifyTypes
   entityId: string
+  metaData?: Record<string, any>
 }

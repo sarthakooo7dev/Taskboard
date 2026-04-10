@@ -150,6 +150,7 @@ model Notification {
   actorId   String
   type      NotifyType
   entityId  String
+  metaData  Json?
   read      Boolean    @default(false)
   createdAt DateTime   @default(now())
 

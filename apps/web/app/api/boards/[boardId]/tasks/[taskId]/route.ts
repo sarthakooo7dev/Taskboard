@@ -184,11 +184,6 @@ export async function PATCH(
     }
     receiverIds = [...new Set(receiverIds)]
 
-    console.log(
-      isStatusChanged,
-      isMetadataUpdated,
-      isTaskAssigned + '##### ___receiverIds' + receiverIds,
-    )
     if (changeCounter > 1) {
       eventDispatcher({
         type: EventType.TASK_EDIT_GENERIC,
@@ -204,7 +199,11 @@ export async function PATCH(
         type: EventType.TASK_EDIT_STATUS,
         boardId,
         creator: checkMembership.user.name,
-        info: { isStatusChanged, newStatus: columnExists?.name },
+        info: {
+          isStatusChanged,
+          oldStatusId: existingTask.columnId,
+          newStatus: columnExists?.name,
+        },
         taskId,
         senderId: currentUserID,
         receiverIds,
@@ -214,14 +213,17 @@ export async function PATCH(
         type: EventType.TASK_EDIT_ASSIGNMENT,
         boardId,
         creator: checkMembership.user.name,
-        info: { isTaskAssigned, assignedToName: assigneeMembership.user.name },
+        info: {
+          isTaskAssigned,
+          oldAssignee: existingTask.assignedToId,
+          newAssignee: assignedToId,
+          newAssigneName: assigneeMembership.user.name,
+        },
         taskId,
         senderId: currentUserID,
         receiverIds,
       })
     } else if (isMetadataUpdated) {
-      console.log('i raaaannnnnn isMetadataUpdated')
-
       eventDispatcher({
         type: EventType.TASK_EDIT_METADATA,
         boardId,

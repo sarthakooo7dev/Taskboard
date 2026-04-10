@@ -29,7 +29,6 @@ export const notificationWorker = new Worker(
         return handleTaskUpdate(job.data)
 
       case NotifyTypes.TASK_EDIT_METADATA:
-        console.log('RANNNN------ notificationWorker')
         return handleTaskUpdate(job.data)
 
       default:

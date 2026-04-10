@@ -14,8 +14,8 @@ export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
     mentionedIds,
   } = jobData
 
-  const currentViewers = await usersViewingBoard(boardId)
-  console.log('RAW:', currentViewers)
+  // const currentViewers = await usersViewingBoard(boardId)
+  // console.log('RAW:', currentViewers)
 
   for (const userId of receiverIds) {
     // CRITICAL → must succeed (no try/catch)
@@ -47,8 +47,8 @@ export async function handleTaskUpdate(jobData: any) {
     info,
   } = jobData
 
-  const currentViewers = await usersViewingBoard(boardId)
-  console.log('RAW:', currentViewers)
+  // const currentViewers = await usersViewingBoard(boardId)
+  // console.log('RAW:', currentViewers)
 
   for (const userId of receiverIds) {
     // CRITICAL → must succeed (no try/catch)
@@ -56,6 +56,7 @@ export async function handleTaskUpdate(jobData: any) {
       userId,
       actorId: senderId,
       type: type,
+      metaData: info,
       entityId: taskId,
     })
     //  NON-CRITICAL → safe to fail
