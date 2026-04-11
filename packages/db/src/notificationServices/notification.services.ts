@@ -6,3 +6,9 @@ export async function createNotification(input: CreateNotificationInput) {
     data: input,
   })
 }
+
+export async function getSubscriptionForUsers(userId: string) {
+  return await prisma.pushSubscription.findMany({
+    where: { userId },
+  })
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { io, Socket } from "socket.io-client"
+import { setupPush } from "../../lib/pushNotifySetup"
 
 // ✅ create socket once
 const socket: Socket = io("http://localhost:4000")
@@ -67,7 +68,18 @@ export default function TestPresence({
     return (
         <div style={{ marginTop: 40, padding: 20 }}>
             <h2>Realtime Test (Presence + Notifications)</h2>
-
+            <button
+                onClick={() => setupPush(userId)}
+                style={{
+                    marginTop: 10,
+                    padding: "6px 12px",
+                    background: "black",
+                    color: "white",
+                    borderRadius: 6,
+                }}
+            >
+                Enable Push Notifications
+            </button>
             {/* BOARD JOIN */}
             <div style={{ marginTop: 20 }}>
                 <input
