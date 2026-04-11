@@ -92,7 +92,6 @@ export async function handleTaskAssignment_pushNotify(
     } = jobData
     const newAssigneeID = String(jobData.info.newAssignee)
     console.log('📨 Push worker running' + JSON.stringify(receiverIds))
-    console.log('##########   ' + JSON.stringify(jobData))
     console.log('##########   ' + JSON.stringify(newAssigneeID))
 
     for (const userId of receiverIds) {
@@ -102,10 +101,8 @@ export async function handleTaskAssignment_pushNotify(
       //   console.log("⏭️ Skip push (user online):", userId)
       //   continue
       // }
-      console.log('userId:', userId, typeof userId)
       // Get subscriptions from DB (custom)
       const subs = await getSubscriptionForUsers(userId)
-      console.log('📨 Push worker running' + JSON.stringify(subs))
 
       // Send push to each device
       for (const sub of subs) {
@@ -126,7 +123,6 @@ export async function handleTaskAssignment_pushNotify(
           }
 
           // web-push library → sends notification to browser
-          console.log('SENDING🎯🎯🎯🎯 PUSH:', userId, title, body)
           await webpush.sendNotification(
             sub.subscription as any, // full JSON
             JSON.stringify({
