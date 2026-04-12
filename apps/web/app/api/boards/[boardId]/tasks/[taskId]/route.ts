@@ -215,6 +215,7 @@ export async function PATCH(
         creator: checkMembership.user.name,
         info: {
           isTaskAssigned,
+          title: updatedTask.title,
           oldAssignee: existingTask.assignedToId,
           newAssignee: assignedToId,
           newAssigneName: assigneeMembership.user.name,

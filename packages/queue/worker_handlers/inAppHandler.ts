@@ -91,16 +91,11 @@ export async function handleTaskAssignment_pushNotify(
       info,
     } = jobData
     const newAssigneeID = String(jobData.info.newAssignee)
+    const newAssigneName = String(jobData.info.newAssigneName)
+    const taskName = (jobData.info.title || '').slice(0, 15) + '...'
     console.log('📨 Push worker running' + JSON.stringify(receiverIds))
-    console.log('##########   ' + JSON.stringify(newAssigneeID))
 
     for (const userId of receiverIds) {
-      // const isOnline = await redis.get(`user:${userId}:online`)
-
-      // if (isOnline) {
-      //   console.log("⏭️ Skip push (user online):", userId)
-      //   continue
-      // }
       // Get subscriptions from DB (custom)
       const subs = await getSubscriptionForUsers(userId)
 
@@ -108,18 +103,12 @@ export async function handleTaskAssignment_pushNotify(
       for (const sub of subs) {
         try {
           // 🔥 personalize message
-          let title = `Task Update ${userId}`
-          let body = 'Assignment updated on a task'
-          const cleanUserId = String(userId)
-          console.log(
-            'COMPARE:',
-            cleanUserId,
-            newAssigneeID,
-            cleanUserId === newAssigneeID,
-          )
+          let title = `Task Update !`
+          let body = `Hey ! there is an update on 📄 ${taskName}`
+
           if (newAssigneeID && String(userId) === newAssigneeID) {
-            title = `New Task Assigned 🎯 ${userId}`
-            body = `Hey! You have been assigned a new task`
+            title = `New Task Assigned 🎯`
+            body = `Hey ! @${newAssigneName} have been assigned a new task 📄`
           }
 
           // web-push library → sends notification to browser
