@@ -5,7 +5,7 @@ import { connection } from '../src/connection'
 import webpush from 'web-push'
 import { getSubscriptionForUsers } from '../../db/src/notificationServices/notification.services'
 import { NotifyTypes } from '../../types'
-import { handleTaskAssignment_pushNotify } from '../worker_handlers/inAppHandler'
+import { handleTaskAssignment_pushNotify } from '../worker_handlers/pushNotifyHandler'
 
 // to make .env load explicitly for worker
 const envPath = path.resolve(process.cwd(), '.env')
