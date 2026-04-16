@@ -1,50 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LIGHT THEME */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 245 247 250;
+  --foreground: 20 20 20;
+
+  --box_1:198 233 178;
+
+  --card: 255 255 255;
+  --border: 230 230 230;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* DARK THEME */
+.dark {
+  --background: 12 12 14;
+  --foreground: 240 240 240;
+--box_1: 27 219 10;
+  --card: 24 24 28;
+  --border: 40 40 45;
 }
 
-html,
+/* APPLY */
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.imgDark {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-
-  .imgLight {
-    display: none;
-  }
-  .imgDark {
-    display: unset;
-  }
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
 }

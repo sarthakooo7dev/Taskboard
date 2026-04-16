@@ -1,0 +1,31 @@
+
+
+:root {
+    --background: 245 247 250;
+    --foreground: 20 20 20;
+
+    --card: 255 255 255;
+    --border: 230 230 230;
+
+    --sidebar: 255 255 255;
+
+    --muted: 120 120 120;
+    --primary: 124 58 237;
+
+    --hover: 240 240 245;
+}
+
+.dark {
+    --background: 12 12 14;
+    --foreground: 240 240 240;
+
+    --card: 24 24 28;
+    --border: 40 40 45;
+
+    --sidebar: 20 20 24;
+
+    --muted: 150 150 160;
+    --primary: 139 92 246;
+
+    --hover: 35 35 40;
+}
