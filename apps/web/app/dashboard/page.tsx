@@ -15,13 +15,12 @@ export default async function Page() {
 
     return (
         <>
-            <h1>Dashboard</h1>
-            <pre>{JSON.stringify(session, null, 2)}</pre>
+            <div className="m-10 p-3 rounded-lg bg-dk_grey">
 
-            <div className="w-28 h-40 bg-box_1">
-                aaaaaaaaaaaaaa
+
+                <h1>Dashboard</h1>
+                <pre>{JSON.stringify(session, null, 2)}</pre>
             </div>
-
             <div className="bg-background">
                 <h1 className="text-xl font-semibold">Theme Test</h1>
 
