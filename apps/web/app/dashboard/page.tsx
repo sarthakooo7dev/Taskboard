@@ -15,7 +15,14 @@ export default async function Page() {
 
     return (
         <>
-            <div className="m-10 p-3 rounded-lg bg-dk_grey">
+            <div className="bd_red m-2 ">
+                dashboard content
+                <h1>Dashboard</h1>
+                <pre>{JSON.stringify(session, null, 2)}</pre>
+            </div>
+
+
+            {/* <div className="m-10 p-3 rounded-lg bg-dk_grey">
 
 
                 <h1>Dashboard</h1>
@@ -31,7 +38,7 @@ export default async function Page() {
                 Test Tailwind
             </div>
             <TestPresence userId={(session.user as any).id} />
-            <Logout />
+            <Logout /> */}
 
 
         </>

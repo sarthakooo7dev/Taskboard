@@ -7,20 +7,34 @@
   --background:255 255 255 ;
   --foreground:32 32 32;
   --lg_grey:229 229 229;
-  --dk_grey:230 231  232;
-
+  --dk_grey:246 246  246;
+  --dk_border: 33 33 34;
 }
 
 /* DARK THEME */
 .dark {
---background: 7 7 7;
+  --background: 7 7 7;
   --foreground: 229 229 229;
---lg_grey: 229 229 229;
-  --dk_grey: 50 49 54;
+  --lg_grey: 229 229 229;
+  --dk_grey: 20 20 22;
+  --dk_border:33 33 34;
 }
 
 /* APPLY */
 body {
   background: rgb(var(--background));
   color: rgb(var(--foreground));
+  font-family: sans-serif , 'Courier New', Courier, monospace;
+}
+
+
+
+.bd_red{
+  border: rgb(121, 4, 4) solid 2px;
+}
+.bd_grn {
+  border: rgb(56, 136, 3) solid 2px;
+}
+.bd_blu {
+  border: rgb(3, 88, 145) solid 2px;
 }

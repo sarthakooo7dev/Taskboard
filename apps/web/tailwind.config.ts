@@ -8,6 +8,7 @@ const config: Config = {
         background: 'rgb(var(--background))',
         foreground: 'rgb(var(--foreground))',
         dk_grey: 'rgb(var(--dk_grey))',
+         dk_border: 'rgb(var(--dk_border))',
       },
     },
   },
