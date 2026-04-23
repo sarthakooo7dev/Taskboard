@@ -1,54 +1,20 @@
-// "use client";
-// import Link from "next/link";
-// import { usePathname } from "next/navigation";
-
-// const links = [
-//     { name: "Dashboard", href: "/" },
-//     { name: "Tasks", href: "/tasks" },
-//     { name: "Calendar", href: "/calendar" },
-//     { name: "AI Insight", href: "/ai-insight" },
-//     { name: "Boards", href: "/boards" },
-//     { name: "Settings", href: "/settings" },
-// ];
-
-// export default function Sidebar() {
-//     const path = usePathname();
-
-//     return (
-//         <div className="w-[14rem] bg-dk_grey p-4 bd_grn">
-
-
-
-
-//             {links.map((link) => (
-//                 <Link key={link.name} href={link.href}>
-//                     <div
-//                         className={`p-2 rounded cursor-pointer ${path === link.href ? "bg-slate-50" : ""
-//                             }`}
-//                     >
-//                         {link.name}
-//                     </div>
-//                 </Link>
-//             ))}
-//         </div>
-//     );
-// }
-
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Info } from 'lucide-react';
+import { useUserStore } from "../../store/user-store";
+import Search from "../utility/sidebar-utils/Search";
+import SidebarDashSection from "../utility/sidebar-utils/SidebarDashSection";
 
 
 export default function Sidebar() {
     const path = usePathname();
-
-    const [userEmail, setUserEmail] = useState("member@test.com")
+    const user = useUserStore((s) => s.user);
 
     return (
-        <aside className="w-[14rem]  bg-dk_grey p-2 flex flex-col justify-between border-r border-r-dk_border">
+        <aside className="w-[14rem]  bg-dk_grey p-2 flex flex-col  border-r border-r-dk_border">
 
             {/*  SECTION 1: LOGO + SEARCH  */}
             <div className=" ">
@@ -59,25 +25,27 @@ export default function Sidebar() {
                     </div>
                     <div className="flex-1 ml-2 ">
                         <p className="text-sm font-semibold tracking-[3px]">ZENTRO</p>
-                        <p className="text-xs opacity-60">{userEmail}</p>
+                        <p className="text-xs w-[16ch] overflow-hidden whitespace-nowrap text-gray-400">{user?.email}</p>
                     </div>
                     <div>
-                        <Info size={18} />
+                        <div className="
+                  text-xs p-[3px] rounded-md bg-[rgb(50,49,54)] border-2 border-[rgb(50,49,54)] text-white/60">
+
+                            <Info size={13} />
+                        </div>
                     </div>
                 </div>
 
                 {/* Search Input */}
-                {/* <div className="mb-6 ">
-                    <input
-                        type="text"
-                        placeholder="🔍 Search"
-                        className="w-full px-3 py-2 rounded-md bg-black/20 outline-none"
-                    />
-                </div> */}
+                <Search />
             </div>
 
             {/*  -------------------------- */}
 
+            {/*  SECTION 2: Dashboard collapsible comp */}
+
+            <SidebarDashSection />
+            {/*  -------------------------- */}
         </aside>
     );
 }

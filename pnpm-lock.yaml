@@ -68,6 +68,9 @@ importers:
       zod:
         specifier: ^4.3.5
         version: 4.3.5
+      zustand:
+        specifier: ^5.0.12
+        version: 5.0.12(@types/react@19.2.2)(react@19.2.0)
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -2407,6 +2410,24 @@ packages:
 
   zod@4.3.5:
     resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
+
+  zustand@5.0.12:
+    resolution: {integrity: sha512-i77ae3aZq4dhMlRhJVCYgMLKuSiZAaUPAct2AksxQ+gOtimhGMdXljRT21P5BNpeT4kXlLIckvkPM029OljD7g==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
 
 snapshots:
 
@@ -4773,3 +4794,8 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@4.3.5: {}
+
+  zustand@5.0.12(@types/react@19.2.2)(react@19.2.0):
+    optionalDependencies:
+      '@types/react': 19.2.2
+      react: 19.2.0

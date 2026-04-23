@@ -1,24 +1,27 @@
+"use client"
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../lib/auth";
 import Logout from "../components/auth/Logout";
 import TestPresence from "../components/testComp/TestPresence";
 import { ThemeToggle } from "../components/testComp/theme-toggleBtn";
+import { useUserStore } from "../store/user-store";
 
 
-export default async function Page() {
-    const session = await getServerSession(authOptions);
+export default function Page() {
+    // const session = await getServerSession(authOptions);
 
-    if (!session) {
-        redirect("/");
-    }
+    // if (!session) {
+    //     redirect("/");
+    // }
+    const user = useUserStore((s) => s.user);
 
     return (
         <>
             <div className="bd_red m-2 ">
                 dashboard content
                 <h1>Dashboard</h1>
-                <pre>{JSON.stringify(session, null, 2)}</pre>
+                <pre>{JSON.stringify(user, null, 2)}</pre>
             </div>
 
 
