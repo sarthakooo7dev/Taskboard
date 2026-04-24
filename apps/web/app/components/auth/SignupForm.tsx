@@ -1,16 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { getRandomAvatar } from "../../lib/utils/ui/getRandomAvatar";
 
 const SignupForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const avatar = getRandomAvatar();
+
     const handleSignup = async () => {
         const res = await fetch("/api/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ email, password, avatar }),
         });
         const data = await res.json();
         console.log(data);

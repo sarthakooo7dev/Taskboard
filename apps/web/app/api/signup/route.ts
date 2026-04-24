@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const validated = validateSchema(userCredSchema, {
       body: reqBody,
     })
-    const { email, password } = validated.body
+    const { email, password, avatar } = validated.body
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
         email,
         name: userName,
         password: hashedPassword,
+        avatar,
       },
     })
     console.log(newUser)

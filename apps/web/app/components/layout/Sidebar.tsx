@@ -58,7 +58,7 @@ export default function Sidebar() {
 
             {/*  SECTION 3: control_center & user card */}
 
-            <div className=" h-full flex flex-col justify-end">
+            <div className=" h-full flex flex-col justify-end ">
 
                 <ControlCenter />
 

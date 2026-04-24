@@ -14,6 +14,7 @@ export async function GET() {
         email: true,
         avatar: true,
         createdAt: true,
+        role: true,
       },
     })
 

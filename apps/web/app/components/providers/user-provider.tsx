@@ -20,10 +20,27 @@ export default function UserProvider({
     const setUser = useUserStore((s) => s.setUser);
 
     useEffect(() => {
-        if (user) {
-            setUser(user);
+        loadUser()
+    }, [setUser])
+
+    async function loadUser() {
+        try {
+            const res = await fetch("/api/user/me", {
+                credentials: "include",
+            })
+
+            if (!res.ok) {
+                throw new Error("Failed to fetch user")
+            }
+
+            const userData = await res.json()
+
+            console.log("----provider ---" + JSON.stringify(userData.data))
+            setUser(userData.data)
+        } catch (err) {
+            console.error(err)
         }
-    }, [user, setUser]);
+    }
 
     return children;
 }

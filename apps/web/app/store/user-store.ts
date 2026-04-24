@@ -4,6 +4,9 @@ type User = {
   name: string
   email: string
   id: string
+  avatar?: string
+  createdAt: string
+  role?: string
 }
 
 type UserStore = {

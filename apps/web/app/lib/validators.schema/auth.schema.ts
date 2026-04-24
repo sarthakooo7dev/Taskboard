@@ -4,6 +4,7 @@ export const userCredSchema = z.object({
   body: z.object({
     email: z.email().max(50),
     password: z.string().min(8).max(30),
+    avatar: z.string(),
   }),
 })
 

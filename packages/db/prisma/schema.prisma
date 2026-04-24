@@ -21,14 +21,14 @@ enum BoardRole {
 }
 
 model User {
-  id        String   @id @default(uuid()) // PK needs generation
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
   avatar    String?
-  createdAt DateTime @default(now()) // timestamp needs default
+  role      String?
+  createdAt DateTime @default(now())
 
-  // Relations (required by Prisma, not extra DB columns)
   boardMembers  BoardMember[]
   createdTasks  Task[]        @relation("TaskCreator")
   assignedTasks Task[]        @relation("TaskAssignee")
@@ -42,7 +42,7 @@ model Board {
   name      String
   ownerId   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt // auto-managed timestamp
+  updatedAt DateTime @updatedAt
 
   owner      User          @relation("BoardOwner", fields: [ownerId], references: [id])
   members    BoardMember[]
@@ -61,7 +61,7 @@ model BoardMember {
   board Board @relation(fields: [boardId], references: [id])
   user  User  @relation(fields: [userId], references: [id])
 
-  @@unique([boardId, userId]) // same as Eraser intent
+  @@unique([boardId, userId])
 }
 
 model BoardColumn {
