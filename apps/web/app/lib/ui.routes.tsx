@@ -3,4 +3,6 @@ export const ROUTES = {
     boards: "/dashboard/boards",
     tasks: "/dashboard/tasks",
     members: "/dashboard/members",
+    settings: "/settings",
+    helpCenter: "/help"
 };

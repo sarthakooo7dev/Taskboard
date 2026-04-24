@@ -40,7 +40,7 @@ const SidebarDashSection = () => {
                         const Icon = item.icon;
                         return (
                             <Link key={item.label} href={item.href}
-                                className={`flex items-center gap-3 px-3 py-2 text-sm text-gray-400 
+                                className={`flex items-center gap-3 px-3 py-2 text-sm text-gray-400 tracking-[1px]
                             ${path === item.href ? "bg-lg_grey text-white/80 " : " hover:bg-lg_grey/30"} rounded-md`} >
                                 <Icon size={16} />
                                 {item.label}
