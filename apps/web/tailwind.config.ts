@@ -10,6 +10,8 @@ const config: Config = {
         dk_grey: 'rgb(var(--dk_grey))',
         lg_grey: 'rgb(var(--lg_grey))',
         dk_border: 'rgb(var(--dk_border))',
+        border: 'rgb(var(--dk_border))',
+        ring: 'rgb(var(--dk_border))',
       },
     },
   },

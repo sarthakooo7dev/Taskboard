@@ -3,6 +3,8 @@
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import { SIDEBAR_CONFIG } from '../../config/sidebar.config'
+import ThemeToggle from '../utility/header-utils/ThemeToggle'
+import Notify from '../utility/header-utils/Notify'
 
 const Header = () => {
 
@@ -18,8 +20,10 @@ const Header = () => {
                 <h2 className='text-lg font-semibold opacity-90 tracking-[1px] '>{title}</h2>
                 <p className='text-sm text-gray-400'>{info}</p>
             </div>
-            <div className='bd_grn w-60'>
+            <div className=' flex justify-end bd_grn items-center p-1 w-[20%] gap-3'>
+                <ThemeToggle />
 
+                <Notify />
             </div>
 
         </div>

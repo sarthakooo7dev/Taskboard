@@ -1,40 +1,96 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT THEME */
+/* 🔹 YOUR COLOR SYSTEM (KEEP THIS) */
 :root {
-  --background:255 255 255 ;
-  --foreground:32 32 32;
-  --lg_grey:229 229 229;
-  --dk_grey:246 246  246;
+  --lg_grey: 229 229 229;
+  --dk_grey: 246 246 246;
   --dk_border: 33 33 34;
 }
 
-/* DARK THEME */
 .dark {
-  --background: 7 7 7;
-  --foreground: 229 229 229;
   --lg_grey: 38 38 40;
   --dk_grey: 20 20 22;
-  --dk_border:33 33 34;
+  --dk_border: 33 33 34;
 }
 
-/* APPLY */
-body {
-  background: rgb(var(--background));
-  color: rgb(var(--foreground));
-  font-family: sans-serif , 'Courier New', Courier, monospace;
+/* 🔹 SHADCN + MAPPING LAYER */
+@layer base {
+  .theme {
+    --font-heading: var(--font-sans);
+    --font-sans: var(--font-sans);
+  }
+
+  /* ✅ LIGHT THEME (mapped to your colors) */
+  :root {
+    --background: rgb(var(--dk_grey));
+    --foreground: rgb(0 0 0);
+
+    --card: rgb(var(--dk_grey));
+    --card-foreground: rgb(0 0 0);
+
+    --popover: rgb(var(--dk_grey));
+    --popover-foreground: rgb(0 0 0);
+
+    --border: rgb(var(--dk_border));
+    --input: rgb(var(--dk_border));
+    --ring: rgb(var(--dk_border));
+
+    --muted: rgb(var(--lg_grey));
+    --muted-foreground: rgb(80 80 80);
+
+    --primary: rgb(0 0 0);
+    --primary-foreground: rgb(255 255 255);
+  }
+
+  /* ✅ DARK THEME (mapped to your colors) */
+  .dark {
+    --background: rgb(var(--dk_grey));
+    --foreground: rgb(229 229 229);
+
+    --card: rgb(var(--dk_grey));
+    --card-foreground: rgb(229 229 229);
+
+    --popover: rgb(var(--dk_grey));
+    --popover-foreground: rgb(229 229 229);
+
+    --border: rgb(var(--dk_border));
+    --input: rgb(var(--dk_border));
+    --ring: rgb(var(--dk_border));
+
+    --muted: rgb(var(--lg_grey));
+    --muted-foreground: rgb(180 180 180);
+
+    --primary: rgb(255 255 255);
+    --primary-foreground: rgb(0 0 0);
+  }
+
+  /* ✅ GLOBAL BASE */
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: sans-serif, 'Courier New', Courier, monospace;
+  }
+
+  html {
+    @apply font-sans;
+  }
 }
 
-
-
-.bd_red{
+/* 🔹 DEBUG CLASSES (KEEP) */
+.bd_red {
   border: rgb(121, 4, 4) solid 2px;
 }
+
 .bd_grn {
   border: rgb(56, 136, 3) solid 2px;
 }
+
 .bd_blu {
   border: rgb(3, 88, 145) solid 2px;
 }
