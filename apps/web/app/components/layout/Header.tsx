@@ -20,7 +20,7 @@ const Header = () => {
                 <h2 className='text-lg font-semibold opacity-90 tracking-[1px] '>{title}</h2>
                 <p className='text-sm text-gray-400'>{info}</p>
             </div>
-            <div className=' flex justify-end bd_grn items-center p-1 w-[20%] gap-3'>
+            <div className=' flex justify-end  items-center p-1 w-[20%] gap-3'>
                 <ThemeToggle />
 
                 <Notify />

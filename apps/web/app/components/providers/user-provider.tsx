@@ -34,8 +34,6 @@ export default function UserProvider({
             }
 
             const userData = await res.json()
-
-            console.log("----provider ---" + JSON.stringify(userData.data))
             setUser(userData.data)
         } catch (err) {
             console.error(err)

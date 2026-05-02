@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import {
     Popover,
@@ -8,8 +8,10 @@ import {
     PopoverContent,
 } from "@/components/ui/popover";
 
+
 const Notify = () => {
-    const count = 55;
+    const count = 15;
+
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -23,8 +25,8 @@ const Notify = () => {
                     {/* 🔵 Badge */}
                     {count > 0 && (
                         <span
-                            className="absolute -top-1 -right-2.5 min-w-[16px] h-[16px] p-[7px]
-                         bg-purple-700 text-gray-200 text-[12px] 
+                            className="absolute -top-2 -right-2 min-w-[15px] h-[17px] p-[7px] 
+                         bg-purple-800 text-gray-200 text-[11px] 
                          flex items-center justify-center rounded-full leading-none"
                         >
                             {count > 7 ? "7+" : count}

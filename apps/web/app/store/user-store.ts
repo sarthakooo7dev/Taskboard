@@ -1,20 +1,5 @@
 import { create } from 'zustand'
-
-type User = {
-  name: string
-  email: string
-  id: string
-  avatar?: string
-  createdAt: string
-  role?: string
-}
-
-type UserStore = {
-  user: User | null
-  counter: string
-  setUser: (user: User) => void
-  clearUser: () => void
-}
+import { UserStore } from '../types/general.types'
 
 export const useUserStore = create<UserStore>((set) => ({
   user: null,

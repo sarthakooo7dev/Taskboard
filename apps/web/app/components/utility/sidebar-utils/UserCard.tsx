@@ -13,8 +13,6 @@ const UserCard = () => {
     const router = useRouter();
     const User = useUserStore((s) => s.user);
 
-    console.log("usercard ___ " + JSON.stringify(User))
-
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -75,7 +73,7 @@ const UserCard = () => {
                 </div>
 
                 <div className="flex-1 ml-2">
-                    <p className="text-sm w-[16ch] overflow-hidden whitespace-nowrap">
+                    <p className="text-sm w-[16ch] overflow-hidden whitespace-nowrap opacity-85">
                         {User?.name}
                     </p>
                     {

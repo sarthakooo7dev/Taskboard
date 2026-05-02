@@ -82,14 +82,22 @@ export async function POST(req: Request) {
         },
       })
 
-          await tx.boardColumn.create({
-        data: {
-          boardId: board.id,
-          name: "Not Started",
-          order: 1,
-          isDefault: true,
-        },
-      });
+      await tx.boardColumn.createMany({
+        data: [
+          {
+            boardId: board.id,
+            name: 'Not Started',
+            order: 1,
+            isDefault: true,
+          },
+          {
+            boardId: board.id,
+            name: 'Blocked',
+            order: 2,
+            isDefault: false,
+          },
+        ],
+      })
 
       return board
     })
