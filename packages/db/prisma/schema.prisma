@@ -38,11 +38,12 @@ model User {
 }
 
 model Board {
-  id        String   @id @default(uuid())
-  name      String
-  ownerId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  Description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   owner      User          @relation("BoardOwner", fields: [ownerId], references: [id])
   members    BoardMember[]
@@ -64,16 +65,24 @@ model BoardMember {
   @@unique([boardId, userId])
 }
 
+enum ColumnType {
+  NOT_STARTED
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CUSTOM
+}
+
 model BoardColumn {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   boardId   String
   name      String
-  isDefault Boolean  @default(false)
+  isDefault Boolean    @default(false)
   order     Int
-  createdAt DateTime @default(now())
-
-  board Board  @relation(fields: [boardId], references: [id])
-  tasks Task[]
+  createdAt DateTime   @default(now())
+  type      ColumnType @default(CUSTOM)
+  board     Board      @relation(fields: [boardId], references: [id])
+  tasks     Task[]
 
   @@index([boardId])
 }
