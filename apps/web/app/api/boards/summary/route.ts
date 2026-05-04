@@ -30,7 +30,7 @@ export async function GET() {
               },
             },
 
-            // ✅ NOW SAFE TO LIMIT
+            // NOW SAFE TO LIMIT
             members: {
               take: 3,
               orderBy: {
@@ -68,7 +68,7 @@ export async function GET() {
     const boardSummaryData = BoardData.map(({ board, role, boardId }) => {
       let totalTasks = 0
       let blockedTasks = 0
-      let inProgress = 0
+      let inProgressTasks = 0
 
       for (const col of board.columns) {
         const count = col._count.tasks
@@ -76,7 +76,7 @@ export async function GET() {
         totalTasks += count
 
         if (col.type === 'BLOCKED') blockedTasks += count
-        if (col.type === 'IN_PROGRESS') inProgress += count
+        if (col.type === 'IN_PROGRESS') inProgressTasks += count
       }
 
       return {
@@ -89,7 +89,7 @@ export async function GET() {
         members: board.members.map((m) => m.user),
         totalTasks,
         blockedTasks,
-        inProgress,
+        inProgressTasks,
       }
     })
 

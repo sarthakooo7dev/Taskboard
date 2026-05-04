@@ -11,28 +11,28 @@ export const SIDEBAR_CONFIG = [
         label: 'Overview',
         icon: LayoutDashboard,
         href: ROUTES.dashboard,
-        info:"Monitor all your boards and tasks here"
+        info: 'Everything you need to stay in sync',
       },
       {
         id: 'boards',
-        label: 'Boards',
+        label: 'Workspace',
         icon: Presentation,
         href: ROUTES.boards,
-        info:"boards"
+        info: 'Browse and manage your boards',
       },
       {
         id: 'tasks',
         label: 'Tasks',
         icon: CheckSquare,
         href: ROUTES.tasks,
-        info:"tasks"
+        info: 'tasks',
       },
       {
         id: 'members',
         label: 'Members',
         icon: Users,
         href: ROUTES.members,
-        info:"members"
+        info: 'members',
       },
     ],
   },

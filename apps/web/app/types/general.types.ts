@@ -19,7 +19,7 @@ export type UserStore = {
 export type Members = {
   id: string
   name: string
-  image?: string
+  avatar?: string
 }
 
 export type BoardCardProps = {
@@ -29,7 +29,8 @@ export type BoardCardProps = {
   description?: string
   totalTasks?: number
   blockedTasks: number
-  inProgress?: number
+  inProgressTasks?: number
+  totalMembers: number
   updatedAt?: string
   members?: Members[]
 }
