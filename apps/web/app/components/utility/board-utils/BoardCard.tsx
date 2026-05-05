@@ -26,18 +26,18 @@ const BoardCard = ({
     const { Icon, bg } = getBoardVisual(boardId);
 
     const updateStatus = formatTimeAgo(updatedAt!)
-    const isUpdateStatusOld = updateStatus.includes("w") || updateStatus.includes("mo");
+    const isUpdateStatusOld = updateStatus.includes("w ago") || updateStatus.includes("mo ago");
     return (
         <div
-            className=" group relative p-3 rounded-xl  bg-lg_grey/30 border border-dk_border transition-all duration-200  cursor-pointer " >
+            className=" group relative p-3 rounded-xl  bg-lg_grey/30 border border-dk_border transition-all duration-200  cursor-pointer  " >
             {/* Top Row */}
             <div className="flex items-center justify-center gap-2  p-1">
                 <div className={`w-12 h-8 rounded-lg flex items-center justify-center ${bg}`}>
-                    <Icon size={18} />
+                    <Icon size={21} />
                 </div>
 
                 {/* Title */}
-                <h3 className=" w-full truncate text-[15px] font-semibold opacity-90">
+                <h3 className=" w-full truncate text-[15px] font-semibold opacity-80">
                     {title}
                 </h3>
 

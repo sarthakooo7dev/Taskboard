@@ -4,10 +4,10 @@ import React from 'react'
 const RoleTag = ({ role }: { role: userBoardRole }) => {
 
     const styles = {
-        MANAGER: "bg-purple-400/20 text-purple-300",
-        LEAD: "bg-blue-400/20 text-blue-300",
-        MEMBER: "bg-orange-500/15 text-orange-300",
-        VIEWER: "bg-gray-500/20 text-gray-300",
+        MANAGER: "bg-purple-500/15 text-purple-400",
+        LEAD: "bg-blue-400/20 text-blue-400",
+        MEMBER: "bg-orange-500/15 text-orange-400",
+        VIEWER: "bg-gray-500/20 text-gray-400",
     };
 
 

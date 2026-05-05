@@ -15,7 +15,6 @@ const ICONS = [
   Aperture,
   AudioWaveform,
   Component,
-  Box,
   Cannabis,
   Origami,
   ShipWheel,
@@ -25,10 +24,10 @@ const ICONS = [
 ]
 
 const COLORS = [
-  'bg-blue-400/20 text-blue-400',
-  'bg-red-400/20 text-red-300',
-  'bg-green-400/20 text-green-400',
-  'bg-lime-400/20 text-lime-400',
+  'bg-purple-800/10 text-purple-400',
+  // 'bg-red-400/20 text-red-300',
+  // 'bg-green-400/20 text-green-400',
+  // 'bg-lime-400/20 text-lime-400',
 ]
 
 const getSeed = (id: string) =>

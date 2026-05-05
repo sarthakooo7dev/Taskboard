@@ -16,6 +16,12 @@ export type UserStore = {
   clearUser: () => void
 }
 
+export type BoardModalState = {
+  open?: boolean
+  openModal: () => void
+  closeModal: () => void
+}
+
 export type Members = {
   id: string
   name: string

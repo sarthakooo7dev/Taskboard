@@ -62,12 +62,13 @@ export async function POST(req: Request) {
     const reqBody = await req.json()
 
     const validated = validateSchema(createBoardSchema, { body: reqBody })
-    const { name } = validated.body
+    const { name, description } = validated.body
 
     const result = await prisma.$transaction(async (tx) => {
       const board = await tx.board.create({
         data: {
           name: name,
+          Description: description,
           //@ts-ignore
           ownerId: session.user.id,
         },
@@ -104,6 +105,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ data: result }, { status: 201 })
   } catch (err) {
+    console.log(err)
     if (err instanceof Error && err.message == 'UNAUTHORIZED') {
       return NextResponse.json(
         {

@@ -1,11 +1,17 @@
 "use client"
 import BoardCard from '@/app/components/utility/board-utils/BoardCard'
+import CreateBoardCard from '@/app/components/utility/board-utils/CreateBoardCard';
+import CreateBoardModal from '@/app/components/utility/board-utils/CreateBoardModal';
 import BoardCardSkeleton from '@/app/components/utility/loader-components/BoardCardSkeleton';
+import { useBoardModalStatus } from '@/app/store/board-store';
 import { BoardCardProps } from '@/app/types/general.types';
 import { useQuery } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 import React, { useState, useEffect } from 'react'
 
 const page = () => {
+
+    const { openModal, closeModal } = useBoardModalStatus();
 
     const { data, isLoading } = useQuery({
         queryKey: ["boards", "summary"],
@@ -13,6 +19,7 @@ const page = () => {
         staleTime: 20 * 1000, // 20 seconds
     });
 
+    console.log("cache [page] " + JSON.stringify(data))
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 p-3">
@@ -42,18 +49,9 @@ const page = () => {
                     />
                 </div>
             })}
-            {/* <BoardCard
-                title="Product Roadmap"
-                boardId="c58596f3-5c39-49e1-bdb6-fe4cc05470b8"
-                role="MANAGER"
-                description="Planning and tracking "
-                totalTasks={12}
-                blockedTasks={5}
-                inProgress={3}
-                updatedAt="2h ago"
-                members={mem}
-            /> */}
+            <CreateBoardCard openModal={openModal} closeModal={closeModal} />
 
+            <CreateBoardModal />
         </div>
     )
 }

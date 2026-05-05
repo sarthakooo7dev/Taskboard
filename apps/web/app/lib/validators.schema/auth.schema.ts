@@ -15,6 +15,7 @@ export const createBoardSchema = z.object({
       .trim()
       .min(5, 'Board name is required')
       .max(50, 'Board name too long'),
+    description: z.string().trim().max(200, 'Description too long'),
   }),
 })
 
