@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import RoleTag from "./RoleTag";
 import { formatTimeAgo, getBoardState, getBoardVisual } from "@/app/lib/utils/ui/boardHelpers";
 import { BoardCardProps } from "@/app/types/general.types";
+import { useRouter } from "next/navigation";
 
 const BoardCard = ({
     title,
@@ -18,7 +19,7 @@ const BoardCard = ({
     blockedTasks,
     members = [],
 }: BoardCardProps) => {
-
+    const router = useRouter();
     const visible = members;
 
     const remaining = totalMembers - members.length;
@@ -27,9 +28,16 @@ const BoardCard = ({
 
     const updateStatus = formatTimeAgo(updatedAt!)
     const isUpdateStatusOld = updateStatus.includes("w ago") || updateStatus.includes("mo ago");
+
+    const handleCardClick = () => {
+        router.push(`/dashboard/boards/${boardId}`);
+    }
+
+
+
     return (
         <div
-            className=" group relative p-3 rounded-xl  bg-lg_grey/30 border border-dk_border transition-all duration-200  cursor-pointer  " >
+            className=" group relative p-3 rounded-xl  bg-lg_grey/30 border border-dk_border transition-all duration-200  cursor-pointer  " onClick={handleCardClick}>
             {/* Top Row */}
             <div className="flex items-center justify-center gap-2  p-1">
                 <div className={`w-12 h-8 rounded-lg flex items-center justify-center ${bg}`}>

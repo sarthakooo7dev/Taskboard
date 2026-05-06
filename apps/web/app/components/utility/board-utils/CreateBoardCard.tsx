@@ -11,8 +11,7 @@ const CreateBoardCard = ({ openModal }: BoardModalState) => {
                         cursor-pointer flex flex-col justify-center items-center min-h-[11.4rem] "
             onClick={openModal}  >
             {/* Icon container */}
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/5
-                              transition "  >
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/5  transition "  >
                 <Plus
                     size={25}
                     className="text-purple-400  transition"
