@@ -16,10 +16,9 @@ const page = () => {
     const { data, isLoading } = useQuery({
         queryKey: ["boards", "summary"],
         queryFn: fetchBoardsSummary,
-        staleTime: 20 * 1000, // 20 seconds
+        staleTime: 10 * 1000, // 10 seconds
     });
 
-    console.log("cache [page] " + JSON.stringify(data))
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 p-3">

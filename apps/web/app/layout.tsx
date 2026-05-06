@@ -4,8 +4,9 @@ import "./globals.css";
 import { ThemeProvider } from "./components/theme-provider";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,6 +33,17 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeProvider>
           {children}
+          <Toaster
+            position="top-right"
+            richColors
+            theme="dark"
+            expand={false}
+            closeButton
+            toastOptions={{
+              className:
+                "!bg-[#111113] !border !border-white/10 !text-gray-300 !tracking-wider",
+            }}
+          />
         </ThemeProvider>
       </body>
 
