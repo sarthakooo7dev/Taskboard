@@ -1,12 +1,12 @@
 "use client"
-import BoardCard from '@/app/components/utility/board-utils/BoardCard'
-import CreateBoardCard from '@/app/components/utility/board-utils/CreateBoardCard';
-import CreateBoardModal from '@/app/components/utility/board-utils/CreateBoardModal';
+import BoardCard from '@/app/components/utility/workspace-utils/BoardCard'
+import CreateBoardCard from '@/app/components/utility/workspace-utils/CreateBoardCard';
+import CreateBoardModal from '@/app/components/utility/workspace-utils/CreateBoardModal';
 import BoardCardSkeleton from '@/app/components/utility/loader-components/BoardCardSkeleton';
 import { useBoardModalStatus } from '@/app/store/board-store';
 import { BoardCardProps } from '@/app/types/general.types';
 import { useQuery } from '@tanstack/react-query';
-import { useMutation } from "@tanstack/react-query";
+
 import React, { useState, useEffect } from 'react'
 
 const page = () => {

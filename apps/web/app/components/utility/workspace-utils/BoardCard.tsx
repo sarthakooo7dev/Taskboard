@@ -30,7 +30,7 @@ const BoardCard = ({
     const isUpdateStatusOld = updateStatus.includes("w ago") || updateStatus.includes("mo ago");
 
     const handleCardClick = () => {
-        router.push(`/dashboard/boards/${boardId}`);
+        router.push(`/dashboard/boards/${boardId}?title=${encodeURIComponent(title)}`);
     }
 
 
