@@ -23,7 +23,7 @@ export default function Sidebar() {
     }
 
     return (
-        <aside className="w-[14rem]  bg-dk_grey p-2 flex flex-col  border-r border-r-dk_border  overflow-y-auto">
+        <aside className="w-[14rem]  bg-dk_grey p-2 flex flex-col  border-r border-r-dk_border  overflow-y-auto minimal-scrollbar">
 
             {/*  SECTION 1: LOGO + SEARCH  */}
             <div className=" ">

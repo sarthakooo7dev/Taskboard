@@ -40,3 +40,46 @@ export type BoardCardProps = {
   updatedAt?: string
   members?: Members[]
 }
+
+export type TaskStatus =
+  | 'NOT_STARTED'
+  | 'IN_PROGRESS'
+  | 'BLOCKED'
+  | 'DONE'
+  | 'CUSTOM'
+
+export interface TaskItem {
+  id: string
+  title: string
+  description: string
+  column: {
+    id: string
+    name: string
+    type: TaskStatus
+  }
+  Priority: 'LOW' | 'MEDIUM' | 'HIGH'
+  estimate: number
+  progress: number
+  comments: number
+  selected?: boolean
+  assignedTo: {
+    id: string
+    name: string
+    avatar: string
+  }
+  _count: {
+    comments: number
+  }
+}
+
+export interface availableStatusType {
+  id: string
+  name: string
+  type: TaskStatus
+  order: number
+}
+
+export interface TaskRowProps {
+  task: TaskItem
+  availableStatus: availableStatusType[]
+}

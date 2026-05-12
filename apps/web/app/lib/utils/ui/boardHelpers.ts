@@ -30,6 +30,41 @@ const COLORS = [
   // 'bg-lime-400/20 text-lime-400',
 ]
 
+export const statusStyles = {
+  NOT_STARTED: {
+    dot: 'bg-gray-400',
+    label: 'Not Started',
+  },
+
+  IN_PROGRESS: {
+    dot: 'bg-green-500',
+    label: 'In Progress',
+  },
+
+  BLOCKED: {
+    dot: 'bg-red-500',
+    label: 'Blocked',
+  },
+
+  DONE: {
+    dot: 'bg-blue-400',
+    label: 'Done',
+  },
+
+  CUSTOM: {
+    dot: 'bg-purple-400',
+    label: 'Custom',
+  },
+}
+
+export const priorityStyles = {
+  LOW: 'bg-gray-500/10 text-gray-400 border border-gray-400/10',
+
+  MEDIUM: 'bg-amber-500/10 text-amber-500 border border-amber-500/10',
+
+  HIGH: 'bg-red-500/10 text-red-400 border border-red-500/10',
+}
+
 const getSeed = (id: string) =>
   id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
 
@@ -75,4 +110,26 @@ export const formatTimeAgo = (isoDate: string) => {
   if (months < 12) return `${months}mo ago`
 
   return `${Math.floor(days / 365)}y ago`
+}
+
+export const formatEstimate = (minutes: number) => {
+  const MINUTES_IN_HOUR = 60
+  const MINUTES_IN_DAY = 60 * 8
+  const MINUTES_IN_WEEK = MINUTES_IN_DAY * 5
+
+  if (minutes < MINUTES_IN_HOUR) {
+    return `${minutes}m`
+  }
+  if (minutes < MINUTES_IN_DAY) {
+    const hours = Math.floor(minutes / MINUTES_IN_HOUR)
+    return `${hours}h`
+  }
+  if (minutes < MINUTES_IN_WEEK) {
+    const days = Math.floor(minutes / MINUTES_IN_DAY)
+    return `${days}d`
+  }
+
+  const weeks = Math.floor(minutes / MINUTES_IN_WEEK)
+
+  return `${weeks}w`
 }

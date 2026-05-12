@@ -22,6 +22,14 @@ export async function GET(
     // Get all board details
     const board = await prisma.board.findUnique({
       where: { id: boardId },
+      include: {
+        columns: {
+          select: { id: true, name: true, type: true, order: true },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
     })
 
     if (!board) {
@@ -36,6 +44,11 @@ export async function GET(
         column: true,
         assignedTo: {
           select: { id: true, name: true, avatar: true },
+        },
+        _count: {
+          select: {
+            comments: true,
+          },
         },
       },
     })

@@ -2,176 +2,121 @@
 
 import Image from "next/image";
 
-import {
-    MoreHorizontal,
-    MessageCircle,
-    ChevronDown,
-} from "lucide-react";
+import { MoreHorizontal, MessageCircle, ChevronDown, MessageCircleMore } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import { TableCell, TableRow, } from "@/components/ui/table";
+import { TaskRowProps } from "@/app/types/general.types";
+import { formatEstimate, priorityStyles, statusStyles } from "@/app/lib/utils/ui/boardHelpers";
 
-import {
-    TableCell,
-    TableRow,
-} from "@/components/ui/table";
 
-import { TaskItem } from "./TaskTable";
 
-interface TaskRowProps {
-    task: TaskItem;
-}
+const TaskRow = ({ task, availableStatus }: TaskRowProps) => {
 
-const statusStyles = {
-    NOT_STARTED: {
-        dot: "bg-gray-400",
-        label: "Not Started",
-    },
+    const truncateDescription = (desc: string) => {
+        if (desc.length <= 60) {
+            return desc;
+        }
+        const sliced = desc.slice(0, 60);
+        const lastSpaceIndex = sliced.lastIndexOf(" ");
+        return sliced.slice(0, lastSpaceIndex) + "...";
+    };
 
-    IN_PROGRESS: {
-        dot: "bg-amber-400",
-        label: "In Progress",
-    },
-
-    BLOCKED: {
-        dot: "bg-red-400",
-        label: "Blocked",
-    },
-
-    DONE: {
-        dot: "bg-emerald-400",
-        label: "Done",
-    },
-
-    CUSTOM: {
-        dot: "bg-purple-400",
-        label: "Custom",
-    },
-};
-
-const priorityStyles = {
-
-    LOW:
-        "bg-blue-500/10 text-blue-400 border border-blue-500/10",
-
-    MEDIUM:
-        "bg-amber-500/10 text-amber-400 border border-amber-500/10",
-
-    HIGH:
-        "bg-purple-500/10 text-purple-400 border border-purple-500/10",
-};
-
-const TaskRow = ({ task }: TaskRowProps) => {
-
-    const currentStatus = statusStyles[task.status];
 
     return (
 
-        <TableRow className="group border-b border-white/[0.04] transition-all duration-200 hover:bg-white/[0.02]">
-
-            <TableCell className="px-6 py-5">
-
-                <div className="flex items-start gap-4">
-
-                    <div className="mt-1 flex flex-col gap-[3px] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-
-                        <div className="h-[3px] w-[3px] rounded-full bg-gray-500" />
-
-                        <div className="h-[3px] w-[3px] rounded-full bg-gray-500" />
-
-                        <div className="h-[3px] w-[3px] rounded-full bg-gray-500" />
-
-                    </div>
-
-                    <div className="space-y-1">
-
-                        <h3 className="text-[15px] font-medium tracking-[0.01em] text-white">
-                            {task.title}
-                        </h3>
-
-                        <p className="line-clamp-1 max-w-[420px] text-sm leading-relaxed text-gray-400">
-                            {task.description}
-                        </p>
-
-                    </div>
-
+        <TableRow className=" border-b border-white/[0.04] transition-all duration-200 hover:bg-lg_grey/15 text-center">
+            <TableCell className="truncate cursor-pointer w-[35%] ">
+                <div className="flex  flex-col items-start  ">
+                    <h3 className="text-sm font-medium tracking-wider text-gray-300">
+                        {task.title}
+                    </h3>
+                    <p className="overflow-hidden text-xs leading-5  text-gray-400">
+                        {truncateDescription(task.description)}
+                    </p>
                 </div>
-
             </TableCell>
 
-            <TableCell>
 
-                <button className="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2 transition-all duration-200 hover:bg-white/[0.04]">
+            <TableCell className="w-[150px]">
+                <div className="flex justify-center ">
+                    <Select defaultValue={task.column.name} onValueChange={(value) => { console.log(value) }}  >
 
-                    <span
-                        className={`h-2 w-2 rounded-full ${currentStatus.dot}`}
-                    />
+                        <SelectTrigger className="h-8 w-[130px] border border-white/[0.06] bg-white/[0.02] text-xs text-gray-200 shadow-none transition-all duration-200 hover:bg-white/[0.04] focus:ring-0">
+                            <div className="flex items-center  overflow-hidden gap-2">
+                                <SelectValue>
+                                </SelectValue>
+                            </div>
 
-                    <span className="text-sm text-gray-200">
-                        {currentStatus.label}
-                    </span>
+                        </SelectTrigger>
 
-                    <ChevronDown
-                        size={14}
-                        className="text-gray-500"
-                    />
+                        <SelectContent className=" p-2  bg-dk_grey text-gray-300 cursor-pointer ">
+                            {availableStatus.map((val) => {
+                                return <>
+                                    <SelectItem key={val.id} value={val.name} className="border-none focus:bg-lg_grey/50 focus:text-white focus:outline-none  focus:ring-0  data-[highlighted]:bg-lg_grey/50 data-[highlighted]:text-gray-200 cursor-pointer">
 
-                </button>
-
+                                        <div className=" flex items-center gap-2 tracking-wider">
+                                            <span className={`h-2 w-2 rounded-full  ${statusStyles[val.type].dot}`} />
+                                            <span className="">{val.name}</span>
+                                        </div>
+                                    </SelectItem>
+                                </>
+                            })}
+                        </SelectContent>
+                    </Select>
+                </div>
             </TableCell>
 
-            <TableCell>
+            <TableCell className="w-[130px] ">
+                <div className="flex items-center justify-between">
+                    <div className="border border-lg_grey h-[6px] min-w-[90px] ">
+                        <div className="h-full rounded-full bg-green-400/70 transition-all duration-300"
+                            style={{ width: `${task.progress}%` }}>
+                        </div>
+                    </div>
+                    <p className="text-[10px] text-gray-300 tracking-wider">{task.progress}%</p>
+                </div>
+            </TableCell>
 
-                <button className="flex items-center gap-3 rounded-xl px-2 py-1 transition-all duration-200 hover:bg-white/[0.03]">
 
+            <TableCell className="w-[80px] ">
+                <div className="flex justify-center items-center" >
                     <Image
-                        src={task.assignee.avatar}
-                        alt={task.assignee.name}
-                        width={34}
-                        height={34}
-                        className="rounded-full border border-white/10"
+                        src={task.assignedTo.avatar}
+                        alt={task.assignedTo.name}
+                        width={25}
+                        height={25}
+                        title={task.assignedTo.name}
+                        className="rounded-full border border-dk_grey cursor-pointer"
                     />
-
-                    <span className="text-sm text-gray-200">
-                        {task.assignee.name}
-                    </span>
-
-                </button>
-
+                </div>
             </TableCell>
 
-            <TableCell>
 
-                <div
-                    className={`inline-flex rounded-lg px-3 py-1 text-xs font-medium tracking-wide ${priorityStyles[task.priority]}`}
-                >
-                    {task.priority}
+
+            <TableCell className="w-[80px] ">
+                <span className="text-sm font-medium text-gray-400">
+                    {formatEstimate(task.estimate)}
+                </span>
+            </TableCell>
+
+            <TableCell className="w-[90px] ">
+                <div className="flex justify-center text-gray-400">
+                    <MessageCircleMore size={16} className="" />
+                    <p className=" pl-1 text-sm mt-[-1px]">
+                        {task?._count?.comments}
+                    </p>
+                </div>
+            </TableCell>
+
+            <TableCell className="w-[90px] text-left  ">
+                <div className={`ml-3 inline-flex rounded-md px-2 py-0 text-[11px] tracking-widest ${priorityStyles[task.Priority]}`}>
+                    {task.Priority}
                 </div>
 
             </TableCell>
 
-            <TableCell>
-
-                <span className="text-sm font-medium text-gray-300">
-                    {task.estimate}
-                </span>
-
-            </TableCell>
-
-            <TableCell>
-
-                <button className="flex items-center gap-2 text-gray-400 transition-colors hover:text-white">
-
-                    <MessageCircle size={16} />
-
-                    <span className="text-sm">
-                        {task.comments}
-                    </span>
-
-                </button>
-
-            </TableCell>
-
-            <TableCell>
-
-                <button className="opacity-0 transition-all duration-200 hover:text-white group-hover:opacity-100">
+            <TableCell className="w-[35px] ">
+                <button className="transition-all duration-200 hover:text-white group-hover:opacity-100">
 
                     <MoreHorizontal
                         size={18}
@@ -179,7 +124,6 @@ const TaskRow = ({ task }: TaskRowProps) => {
                     />
 
                 </button>
-
             </TableCell>
 
         </TableRow>

@@ -1,4 +1,4 @@
-import { prisma } from '@repo/db'
+import { ColumnType, prisma } from '@repo/db'
 import { NextResponse } from 'next/server'
 import { checkAuthorization } from '../../lib/validators/user.validator'
 import { validateSchema } from '../../lib/validators/schema.validator'
@@ -87,14 +87,30 @@ export async function POST(req: Request) {
         data: [
           {
             boardId: board.id,
-            name: 'Not Started',
-            order: 1,
+            name: 'Blocked',
+            type: ColumnType.BLOCKED,
+            order: 0,
             isDefault: true,
           },
           {
             boardId: board.id,
-            name: 'Blocked',
+            name: 'Not Started',
+            type: ColumnType.NOT_STARTED,
+            order: 1,
+            isDefault: false,
+          },
+          {
+            boardId: board.id,
+            name: 'In Progress',
+            type: ColumnType.IN_PROGRESS,
             order: 2,
+            isDefault: false,
+          },
+          {
+            boardId: board.id,
+            name: 'Done',
+            type: ColumnType.DONE,
+            order: 3,
             isDefault: false,
           },
         ],
