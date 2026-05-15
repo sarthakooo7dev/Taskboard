@@ -62,6 +62,7 @@ export interface TaskItem {
   progress: number
   comments: number
   selected?: boolean
+  createdAt: string
   assignedTo: {
     id: string
     name: string

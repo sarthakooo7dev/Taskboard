@@ -6,7 +6,7 @@ import React from 'react'
 const page = () => {
 
     return <>
-        <div className='m-2 flex h-[96%] flex-col  bd_red '>
+        <div className=' flex h-full flex-col   '>
             <TaskMainComp />
         </div>
     </>;

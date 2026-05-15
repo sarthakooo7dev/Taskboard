@@ -39,7 +39,7 @@ export async function GET(
     // Get all tasks for the board
     const tasks = await prisma.task.findMany({
       where: { boardId },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
       include: {
         column: true,
         assignedTo: {

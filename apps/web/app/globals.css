@@ -117,3 +117,23 @@
 .minimal-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.16);
 }
+
+/* Default width for large screens */
+.table_container {
+width:81vw
+ 
+}
+
+/* Width for medium screens (e.g., tablets) */
+@media (max-width: 959px) {
+  .table_container {
+    width: 60vw;
+  }
+}
+
+/* Width for small screens (e.g., mobile phones) */
+@media (max-width: 479px) {
+  .table_container {
+    width: 100%;
+  }
+}

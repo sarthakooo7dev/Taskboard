@@ -1,219 +1,240 @@
 "use client";
 
-import {
-    Table,
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-
 import TaskRow from "./TaskRow";
 
 import {
     ChevronsLeft,
     ChevronsRight,
     ClipboardList,
+    Divide,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { availableStatusType, TaskItem } from "@/app/types/general.types";
 
+import {
+    availableStatusType,
+    TaskItem,
+} from "@/app/types/general.types";
+import Image from "next/image";
+import { useState } from "react";
 
-
+const columns = `
+    minmax(320px, 2.4fr)
+    minmax(140px, 1.2fr)
+    minmax(120px, 1fr)
+    minmax(90px, 0.8fr)
+    minmax(90px, 0.8fr)
+    minmax(100px, 0.9fr)
+    minmax(10px, 0.9fr)
+    minmax(61px, 0.5fr)
+`;
 
 const TaskMainComp = () => {
 
-    const scrollRef = useRef<HTMLDivElement>(null);
     const params = useParams();
-    const [hasVerticalScroll, setHasVerticalScroll] = useState(false);
+    const ITEMS_PER_PAGE: number = 10;
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     const { data, isLoading } = useQuery({
         queryKey: ["board-tasks", params.boardId],
-
         queryFn: async () => {
             const res = await fetch(`/api/boards/${params.boardId}`);
             if (!res.ok) {
-                toast.error("Something went wrong.Try refresh");
-                throw new Error("Failed to fetch Tasks for the board");
+                toast.error("Something went wrong. Try refresh");
+                throw new Error(
+                    "Failed to fetch Tasks for the board",
+                );
             }
             return res.json();
         },
+        staleTime: 10 * 1000,
+        refetchOnMount: false, // 10 seconds
     });
 
-    const tasks = data?.data?.tasks ?? [];
+    // ### for testing purposes
+    const tasks = data?.data?.tasks.flatMap((task: any) =>
+
+        Array.from({ length: 4 }, (_, i) => ({
+            ...task,
+            id: `${task.id}-${i}`,
+        }))
+
+    ) ?? [];
+    // ### for testing purposes
+
     const availableStatus: availableStatusType[] = data?.data?.board?.columns ?? [];
-    console.log(data)
-    console.log(tasks)
 
-    useEffect(() => {
+    const totalTasks = tasks.length;
+    const totalPages = Math.ceil(totalTasks / ITEMS_PER_PAGE);
 
-        const el = scrollRef.current;
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
 
-        if (!el) return;
+    const paginatedTasks = tasks.slice(startIndex, endIndex,);
 
-        const checkScroll = () => {
 
-            setHasVerticalScroll(
-                el.scrollHeight > el.clientHeight
-            );
-
-        };
-
-        checkScroll();
-
-        window.addEventListener("resize", checkScroll);
-
-        return () => {
-            window.removeEventListener("resize", checkScroll);
-        };
-
-    }, [data]);
 
     return (
 
-        <div className="flex h-full min-h-0 flex-col rounded-md overflow-hidden">
+        <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-md">
 
-            {/* Top Section */}
-            <div className="flex min-h-0 flex-1 flex-col bd_blu">
+            {/* MAIN */}
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
 
-                {/* Info Cards */}
+                {/* INFO */}
                 <div className="m-1 border border-white/[0.04] p-4">
                     info cards
                 </div>
 
-                {/* Toolbar */}
+                {/* TOOLBAR */}
                 <div className="mx-1 mb-1 border border-white/[0.04] p-4">
                     toolbar
                 </div>
 
-                {/* Table Wrapper */}
-                <div className="mx-1 flex min-h-0 flex-1 flex-col  border border-white/[0.04] ">
+                {/* TASK GRID */}
+                <div className="mx-1 flex min-h-0 flex-1 flex-col overflow-hidden border-l border-r border-white/[0.04] ">
 
-                    {/* Fixed Header */}
-                    <Table className="table-fixed min-w-[700px] w-full">
+                    {/* HORIZONTAL SCROLL OWNER */}
+                    <div className="flex-1 overflow-x-auto overflow-y-hidden ">
 
-                        <TableHeader className="bg-lg_grey/35">
+                        {/* WIDTH CONTROLLER */}
+                        <div className="min-w-[1100px] h-full flex flex-col ">
 
-                            <TableRow className="h-[34px] border-b border-white/[0.04] text-sm tracking-wider text-gray-300 hover:bg-transparent">
+                            {/* HEADER */}
+                            <div className="sticky top-0 z-20 border-b border-white/[0.04] bg-lg_grey/10 ">
 
-                                <TableHead className="min-w-3 w-[35%] text-left ">
-                                    Task
-                                </TableHead>
+                                <div
+                                    className=" grid h-[34px] items-end   bg-lg_grey/35  text-sm tracking-wider text-gray-300  " style={{ gridTemplateColumns: columns }} >
 
-                                <TableHead className="w-[150px] text-center ">
-                                    Status
-                                </TableHead>
+                                    <div className=" pl-4 text-left  ">
+                                        Task
+                                    </div>
 
-                                <TableHead className="w-[130px] text-center ">
-                                    Progress
-                                </TableHead>
+                                    <div className="  text-center  ">
+                                        Status
+                                    </div>
 
-                                <TableHead className="w-[80px] text-center ">
-                                    Assignee
-                                </TableHead>
+                                    <div className=" text-center ">
+                                        Progress
+                                    </div>
 
-                                <TableHead className="w-[80px] text-center ">
-                                    Estimate
-                                </TableHead>
+                                    <div className=" text-center ">
+                                        Assignee
+                                    </div>
 
-                                <TableHead className="w-[90px] text-center ">
-                                    Comments
-                                </TableHead>
+                                    <div className=" text-center ">
+                                        Estimate
+                                    </div>
 
-                                <TableHead className="w-[90px] text-center ">
-                                    Priority
-                                </TableHead>
+                                    <div className=" text-center ">
+                                        Comments
+                                    </div>
 
-                                <TableHead className={`w-[35px]  ${hasVerticalScroll ? "pr-9" : ""}`} />
+                                    <div className=" text-center ">
+                                        Priority
+                                    </div>
 
+                                    <div className="text-center  ">
 
-                            </TableRow>
+                                    </div>
+                                    <div />
 
-                        </TableHeader>
-
-                    </Table>
-
-                    {/* Scroll Area */}
-                    <div className="flex-1 overflow-auto minimal-scrollbar" ref={scrollRef}>
-
-                        <Table className="table-fixed min-w-[1100px] w-full">
-
-                            <TableBody>
-
-                                {tasks.map((val: TaskItem) => {
-                                    return (
-                                        <TaskRow
-                                            key={val.id}
-                                            task={val}
-                                            availableStatus={availableStatus}
-                                        />
-                                    );
-                                })}
-
-                            </TableBody>
-
-                        </Table>
-
-                        {tasks.length === 0 && (
-
-                            <div className="flex h-full items-center justify-center gap-1 text-gray-500">
-
-                                <ClipboardList size={22} />
-
-                                <p className="mt-1 text-sm tracking-wider">
-                                    No tasks yet
-                                </p>
+                                </div>
 
                             </div>
 
-                        )}
+                            {/* BODY */}
+                            <div className="flex-1 overflow-y-auto minimal-scrollbar [scrollbar-gutter:stable]">
 
+                                {tasks.length > 0 ? (
+
+                                    <div className="flex flex-col">
+
+                                        {paginatedTasks.map((task: TaskItem) => (
+
+                                            <TaskRow
+                                                key={task.id}
+                                                task={task}
+                                                availableStatus={
+                                                    availableStatus
+                                                }
+                                            />
+
+                                        ))}
+
+                                    </div>
+
+                                ) : isLoading ? (
+
+                                    <div className="flex h-full items-center justify-center text-gray-500 ">
+                                        <Image
+                                            src="/images/loader.svg"
+                                            alt="loading"
+                                            width={30}
+                                            height={30}
+                                            priority
+                                        />
+                                    </div>
+
+                                ) :
+                                    (
+                                        <div className="flex h-full items-center justify-center gap-1 text-gray-500">
+                                            <ClipboardList size={22} />
+                                            <p className="mt-1 text-sm tracking-wider">
+                                                No tasks yet
+                                            </p>
+                                        </div>
+                                    )}
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-
             </div>
 
-            {/* Footer */}
-            <div className="mx-1 grid grid-cols-3 rounded-b-xl border border-white/[0.04] p-1 bd_blu">
 
+
+            {/* FOOTER */}
+            <div className="mx-1 grid grid-cols-3 rounded-b-xl border border-white/[0.04] p-1">
+
+                {/* INFO */}
                 <p className="flex items-center pl-2 text-xs text-gray-500">
-                    Showing 1 to 5 of 5 tasks
+                    {totalTasks > 0 ? `Showing ${startIndex + 1} to ${Math.min(endIndex, totalTasks)} of ${totalTasks} tasks`
+                        : "No tasks"}
                 </p>
 
+                {/* PAGINATION */}
                 <div className="flex items-center justify-center">
-
-                    <div className="flex items-center">
-
-                        <ChevronsLeft
-                            size={20}
-                            className="cursor-pointer text-gray-500 hover:text-gray-400"
-                        />
-
-                        <button className="flex h-4 min-w-[20px] items-center justify-center rounded-md p-[8px] text-xs font-medium text-gray-400">
-                            1
+                    <div className="flex items-center gap-1">
+                        {/* PREV */}
+                        <button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            className="flex items-center justify-center rounded-md p-1 text-gray-500 transition-colors duration-200 hover:text-gray-300 disabled:cursor-not-allowed disabled:opacity-30" >
+                            <ChevronsLeft size={18} />
                         </button>
 
-                        <button className="flex h-4 min-w-[20px] items-center justify-center rounded-md border border-lg_grey p-[8px] text-xs font-medium text-gray-400">
-                            2
+                        {/* PAGE BUTTONS */}
+                        {Array.from({ length: totalPages }).map((_, index) => {
+                            const page = index + 1;
+                            const isActive = page === currentPage;
+
+                            return (
+                                <button key={page} onClick={() => setCurrentPage(page)}
+                                    className={`flex h-4 min-w-[20px] items-center justify-center rounded-sm  text-[12px] transition-colors duration-200 text-gray-400 ${isActive
+                                        ? " border border-purple-700  "
+                                        : ""}`} >
+                                    {page}
+                                </button>
+                            );
+                        })}
+
+                        {/* NEXT */}
+                        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} className="flex items-center justify-center rounded-md p-1 text-gray-500 transition-colors duration-200 hover:text-gray-300 disabled:cursor-not-allowed disabled:opacity-30"   >
+                            <ChevronsRight size={18} />
                         </button>
-
-                        <button className="flex h-4 min-w-[20px] items-center justify-center rounded-md p-[8px] text-xs font-medium text-gray-400">
-                            3
-                        </button>
-
-                        <ChevronsRight
-                            size={20}
-                            className="cursor-pointer text-gray-500 hover:text-gray-400"
-                        />
-
                     </div>
-
                 </div>
-
+                <div />
             </div>
 
         </div>
