@@ -22,7 +22,13 @@ export async function PATCH(
     const validated = validateSchema(updateTaskSchema, {
       body: reqBody,
     })
-    const { title, description, columnId, assignedToId } = validated.body
+    const {
+      title,
+      description,
+      columnId,
+      progress,
+      assignedToId,
+    } = validated.body
 
     const checkMembership = await checkBoardAccess(boardId, currentUserID)
 
@@ -83,39 +89,16 @@ export async function PATCH(
       (title !== undefined && title !== existingTask.title) ||
       (description !== undefined && description !== existingTask.description)
 
-    // const result = await prisma.task.updateMany({
-    //   where: {
-    //     id: taskId,
-    //     boardId,
-    //   },
-    //   data: {
-    //     title,
-    //     description,
-    //     columnId,
-    //     assignedToId,
-    //   },
-    // })
-
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
       data: {
         ...(title !== undefined && { title }),
         ...(description !== undefined && { description }),
         ...(columnId !== undefined && { columnId }),
+        ...(progress !== undefined && { progress }),
         ...(assignedToId !== undefined && { assignedToId }),
       },
     })
-
-    // if (result.count === 0) {
-    //   return NextResponse.json(
-    //     { message: 'Task not found in this board.' },
-    //     { status: 404 },
-    //   )
-    // }
-
-    // const isStatusChanged= columnId ? true : false;
-    // const isTaskAssigned= assignedToId ? true : false;
-    // const isMetadataUpdated = (title || description) ? true : false;
 
     let changeCounter = 0
 
@@ -243,7 +226,10 @@ export async function PATCH(
     }
 
     return NextResponse.json(
-      { message: 'Task updated successfully' },
+      {
+        message: 'Task updated successfully',
+        data: updatedTask,
+      },
       { status: 200 },
     )
   } catch (err) {

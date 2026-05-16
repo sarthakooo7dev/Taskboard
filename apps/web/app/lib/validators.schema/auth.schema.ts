@@ -52,6 +52,7 @@ export const updateTaskSchema = z.object({
       title: z.string().min(2).max(100).optional(),
       description: z.string().trim().optional(),
       columnId: z.string().optional(),
+      progress: z.number().min(0).max(100).optional(),
       assignedToId: z.string().nullable().optional(),
     })
     .strict(),

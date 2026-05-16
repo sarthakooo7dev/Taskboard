@@ -49,19 +49,20 @@ const TaskMainComp = () => {
             }
             return res.json();
         },
-        staleTime: 10 * 1000,
-        refetchOnMount: false, // 10 seconds
+        // refetchOnMount: false, // 10 seconds
     });
 
     // ### for testing purposes
-    const tasks = data?.data?.tasks.flatMap((task: any) =>
+    // const tasks = data?.data?.tasks.flatMap((task: any) =>
 
-        Array.from({ length: 4 }, (_, i) => ({
-            ...task,
-            id: `${task.id}-${i}`,
-        }))
+    //     Array.from({ length: 4 }, (_, i) => ({
+    //         ...task,
+    //         id: `${task.id}-${i}`,
+    //     }))
 
-    ) ?? [];
+    // ) ?? [];
+
+    const tasks = data?.data?.tasks ?? [];
     // ### for testing purposes
 
     const availableStatus: availableStatusType[] = data?.data?.board?.columns ?? [];
@@ -160,6 +161,7 @@ const TaskMainComp = () => {
                                                 availableStatus={
                                                     availableStatus
                                                 }
+                                                boardId={params.boardId as string}
                                             />
 
                                         ))}

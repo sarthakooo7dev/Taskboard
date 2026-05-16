@@ -83,4 +83,5 @@ export interface availableStatusType {
 export interface TaskRowProps {
   task: TaskItem
   availableStatus: availableStatusType[]
+  boardId: string
 }

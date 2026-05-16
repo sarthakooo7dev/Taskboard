@@ -1,27 +1,15 @@
 "use client";
 
 import Image from "next/image";
-
-import {
-    MessageCircleMore,
-    MoreHorizontal,
-} from "lucide-react";
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Loader, MessageCircleMore, MoreHorizontal, } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 
 import { TaskRowProps } from "@/app/types/general.types";
-
-import {
-    formatEstimate,
-    priorityStyles,
-    statusStyles,
-} from "@/app/lib/utils/ui/boardHelpers";
+import { formatEstimate, priorityStyles, statusStyles, } from "@/app/lib/utils/ui/boardHelpers";
+import { TaskStatus } from "@/app/types/general.types";
+import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { useUpdateTask } from "@/app/hooks/useUpdateTask";
 
 const columns = `
     minmax(320px, 2.4fr)
@@ -34,9 +22,12 @@ const columns = `
     minmax(40px, 0.4fr)
 `;
 
-const TaskRow = ({ task, availableStatus }: TaskRowProps) => {
-    const truncateDescription = (desc: string,) => {
+const TaskRow = ({ task, availableStatus, boardId }: TaskRowProps) => {
 
+    const updateTaskMutation = useUpdateTask({ boardId });
+
+
+    const truncateDescription = (desc: string,) => {
         if (!desc) return "";
         if (desc.length <= 60) {
             return desc;
@@ -48,37 +39,79 @@ const TaskRow = ({ task, availableStatus }: TaskRowProps) => {
         );
     };
 
+    const handleStatusUpdate = (selectedStatusId: string) => {
+
+
+        const selectedColumn = availableStatus.find((status) => status.id === selectedStatusId);
+
+        console.log(selectedColumn?.id)
+        console.log(task.id)
+        console.log(task.column.type)
+
+        if (!selectedColumn) return;
+
+        // By default preserve current progress
+        let updatedProgress = task.progress;
+
+        // CASE 1: User is moving task TO Done
+        if (selectedColumn.type === "DONE") {
+            updatedProgress = 100;
+        }
+
+        // CASE 2: User is moving task TO NOT_STARTED
+        else if (selectedColumn.type === "NOT_STARTED") {
+            updatedProgress = 0;
+        }
+
+        // CASE 3: // Moving FROM Not Started to active status
+        else if (task.progress === 0) {
+            updatedProgress = 10;
+        }
+
+        // CASE 4: // Any NON-DONE status
+        else if (task.progress === 100) {
+            updatedProgress = 90;
+        }
+
+        updateTaskMutation.mutate({
+            taskId: task.id,
+            columnId: selectedColumn.id,
+            progress: updatedProgress,
+        });
+    }
+
     return (
 
         <div
             className="grid min-h-[64px] border-b border-white/[0.04] transition-colors duration-200 hover:bg-lg_grey/15"
-            style={{
-                gridTemplateColumns: columns,
-            }}
-        >
+            style={{ gridTemplateColumns: columns }} >
 
             {/* TASK */}
             <div className="flex min-w-0 cursor-pointer flex-col justify-center px-4 py-2 ">
-
                 <h3 className="truncate text-sm font-medium tracking-wider text-gray-300">
                     {task.title}
                 </h3>
-
                 <p className="truncate text-xs leading-5 tracking-wide text-gray-400">
-                    {truncateDescription(task.description,)}
+                    {truncateDescription(task.description)}
                 </p>
             </div>
 
             {/* STATUS */}
             <div className=" flex items-center justify-center px-2">
                 <Select
-                    defaultValue={task.column.name}
-                    onValueChange={(value) => {
-                        console.log(value);
-                    }}              >
-
-                    <SelectTrigger className="h-8 w-full max-w-[130px] border border-white/[0.06] bg-white/[0.02] text-xs text-gray-200 shadow-none transition-colors duration-200 focus:ring-0">
+                    value={task.column.id}
+                    onValueChange={handleStatusUpdate} >
+                    <SelectTrigger className="relative h-8 w-full max-w-[130px] border border-white/[0.06] bg-white/[0.02] text-xs text-gray-200 shadow-none transition-colors duration-200 focus:ring-0">
                         <SelectValue />
+                        {
+                            updateTaskMutation.isPending && (
+
+                                <Loader
+                                    size={14}
+                                    className="z-10 bg-dk_grey absolute right-2 animate-[spin_2s_linear_infinite] text-gray-300"
+                                />
+                            )
+                        }
                     </SelectTrigger>
 
                     <SelectContent className="cursor-pointer bg-dk_grey p-2 text-gray-300">
@@ -86,7 +119,7 @@ const TaskRow = ({ task, availableStatus }: TaskRowProps) => {
                             return (
                                 <SelectItem
                                     key={val.id}
-                                    value={val.name}
+                                    value={val.id}
                                     className="cursor-pointer border-none focus:bg-lg_grey/50 focus:text-white focus:outline-none focus:ring-0 data-[highlighted]:bg-lg_grey/50 data-[highlighted]:text-gray-200"  >
 
                                     <div className="flex items-center gap-2 tracking-wider">
@@ -105,13 +138,13 @@ const TaskRow = ({ task, availableStatus }: TaskRowProps) => {
             </div>
 
             {/* PROGRESS */}
-            <div className=" flex items-center px-3">
+            <div className=" flex items-center px-2 ">
                 <div className="flex w-full items-center gap-2">
                     <div className="h-[6px] min-w-0 flex-1 overflow-hidden rounded-full border border-lg_grey">
                         <div className="h-full rounded-full bg-green-400/70 transition-all duration-300"
                             style={{ width: `${task.progress}%` }} />
                     </div>
-                    <p className="whitespace-nowrap text-[10px] tracking-wider text-gray-300">
+                    <p className="whitespace-nowrap text-[10px]  w-8 tracking-wider text-gray-300">
                         {task.progress}%
                     </p>
                 </div>
