@@ -19,6 +19,7 @@ import {
 } from "@/app/types/general.types";
 import Image from "next/image";
 import { useState } from "react";
+import TaskDetailsSheet from "./TaskDetailsSheet";
 
 const columns = `
     minmax(320px, 2.4fr)
@@ -41,6 +42,7 @@ const TaskMainComp = () => {
         queryKey: ["board-tasks", params.boardId],
         queryFn: async () => {
             const res = await fetch(`/api/boards/${params.boardId}`);
+
             if (!res.ok) {
                 toast.error("Something went wrong. Try refresh");
                 throw new Error(
@@ -74,8 +76,13 @@ const TaskMainComp = () => {
     const endIndex = startIndex + ITEMS_PER_PAGE;
 
     const paginatedTasks = tasks.slice(startIndex, endIndex,);
+    const [openTask, setOpenTask] = useState(false)
+    const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null)
 
-
+    const handleSelectedTask = (currentTask: TaskItem) => {
+        setSelectedTask(currentTask);
+        setOpenTask(true)
+    }
 
     return (
 
@@ -158,9 +165,8 @@ const TaskMainComp = () => {
                                             <TaskRow
                                                 key={task.id}
                                                 task={task}
-                                                availableStatus={
-                                                    availableStatus
-                                                }
+                                                availableStatus={availableStatus}
+                                                handleSelectedTask={handleSelectedTask}
                                                 boardId={params.boardId as string}
                                             />
 
@@ -239,6 +245,9 @@ const TaskMainComp = () => {
                 <div />
             </div>
 
+            <TaskDetailsSheet openTask={openTask}
+                onOpenChange={setOpenTask}
+                task={selectedTask} />
         </div>
     );
 };

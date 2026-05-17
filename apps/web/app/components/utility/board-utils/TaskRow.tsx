@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Loader, MessageCircleMore, MoreHorizontal, } from "lucide-react";
+import { Loader, MessageCircleMore, MoreHorizontal, Pencil, Trash2, } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 
 import { TaskRowProps } from "@/app/types/general.types";
@@ -10,6 +10,8 @@ import { TaskStatus } from "@/app/types/general.types";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useUpdateTask } from "@/app/hooks/useUpdateTask";
+
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const columns = `
     minmax(320px, 2.4fr)
@@ -22,7 +24,7 @@ const columns = `
     minmax(40px, 0.4fr)
 `;
 
-const TaskRow = ({ task, availableStatus, boardId }: TaskRowProps) => {
+const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRowProps) => {
 
     const updateTaskMutation = useUpdateTask({ boardId });
 
@@ -80,6 +82,10 @@ const TaskRow = ({ task, availableStatus, boardId }: TaskRowProps) => {
         });
     }
 
+    const handleTask = () => {
+        handleSelectedTask(task)
+    }
+
     return (
 
         <div
@@ -87,11 +93,11 @@ const TaskRow = ({ task, availableStatus, boardId }: TaskRowProps) => {
             style={{ gridTemplateColumns: columns }} >
 
             {/* TASK */}
-            <div className="flex min-w-0 cursor-pointer flex-col justify-center px-4 py-2 ">
-                <h3 className="truncate text-sm font-medium tracking-wider text-gray-300">
+            <div className="group flex min-w-0 cursor-pointer flex-col justify-center px-4 py-2 " onClick={handleTask}>
+                <h3 className="truncate text-sm font-medium tracking-wider text-gray-300 group-hover:text-gray-100">
                     {task.title}
                 </h3>
-                <p className="truncate text-xs leading-5 tracking-wide text-gray-400">
+                <p className="truncate text-xs leading-5 tracking-wide text-gray-400 ">
                     {truncateDescription(task.description)}
                 </p>
             </div>
@@ -105,7 +111,6 @@ const TaskRow = ({ task, availableStatus, boardId }: TaskRowProps) => {
                         <SelectValue />
                         {
                             updateTaskMutation.isPending && (
-
                                 <Loader
                                     size={14}
                                     className="z-10 bg-dk_grey absolute right-2 animate-[spin_2s_linear_infinite] text-gray-300"
@@ -189,10 +194,44 @@ const TaskRow = ({ task, availableStatus, boardId }: TaskRowProps) => {
             </div>
 
             {/* MENU */}
-            <div className=" flex items-center justify-center ">
-                <button className="transition-colors duration-200 hover:text-white">
-                    <MoreHorizontal size={18} className="text-gray-500" />
-                </button>
+            <div className="flex items-center justify-center">
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <button className="rounded-md p-1.5 text-gray-400 disabled:text-gray-700" disabled={updateTaskMutation.isPending} >
+                            <MoreHorizontal size={18} className=" transition-colors duration-200  " />
+                        </button>
+                    </PopoverTrigger>
+
+
+                    {/* POPOVER CONTENT */}
+                    <PopoverContent side="bottom" align="end" className="z-50 w-[120px] rounded-md border border-white/[0.06] bg-dk_grey p-1 shadow-2xl shadow-black/30" >
+
+                        <div className="flex flex-col">
+                            {/* EDIT */}
+                            <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs tracking-wider text-gray-300 transition-colors duration-200 hover:bg-lg_grey/30" >
+                                <Pencil size={12} />
+                                <span>
+                                    Edit
+                                </span>
+                            </button>
+
+                            {/* DELETE */}
+                            <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs tracking-wider text-red-500 transition-colors duration-200 hover:bg-lg_grey/30" >
+
+                                <Trash2 size={15} />
+
+                                <span>
+                                    Delete
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </PopoverContent>
+
+                </Popover>
+
             </div>
         </div>
 

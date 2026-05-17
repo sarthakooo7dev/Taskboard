@@ -106,10 +106,10 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
 
       toast.error('Failed to update task')
 
-      console.log(
-        'onerror ____ ' +
-          JSON.stringify(queryClient.getQueryData(['board-tasks', boardId])),
-      )
+      // console.log(
+      //   'onerror ____ ' +
+      //     JSON.stringify(queryClient.getQueryData(['board-tasks', boardId])),
+      // )
     },
 
     // Request succeeded
@@ -117,10 +117,10 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
       // Silent background sync
       // queryClient.invalidateQueries({ queryKey: ['board-tasks', boardId] })
 
-      console.log(
-        'onSuccess ____ ' +
-          JSON.stringify(queryClient.getQueryData(['board-tasks', boardId])),
-      )
+      // console.log(
+      //   'onSuccess ____ ' +
+      //     JSON.stringify(queryClient.getQueryData(['board-tasks', boardId])),
+      // )
     },
   })
 }

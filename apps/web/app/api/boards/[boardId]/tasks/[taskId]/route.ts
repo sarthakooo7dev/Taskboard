@@ -298,6 +298,7 @@ export async function DELETE(
         id: true,
         title: true,
         assignedToId: true,
+        createdById: true,
       },
     })
 
@@ -311,9 +312,9 @@ export async function DELETE(
     // Permission rule
     const isManagerOrLead =
       checkMembership.role === 'MANAGER' || checkMembership.role === 'LEAD'
-    const isOwner = task.assignedToId === currentUserID
+    const isCreator = task.createdById === currentUserID
 
-    if (!isManagerOrLead && !isOwner) {
+    if (!isManagerOrLead && !isCreator) {
       return NextResponse.json(
         { message: 'Insufficient permission to perform this action.' },
         { status: 403 },
