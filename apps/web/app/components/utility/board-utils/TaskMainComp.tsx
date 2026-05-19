@@ -78,9 +78,13 @@ const TaskMainComp = () => {
     const paginatedTasks = tasks.slice(startIndex, endIndex,);
     const [openTask, setOpenTask] = useState(false)
     const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null)
+    const [isEditMode, setIsEditMode] = useState<boolean>(false)
 
-    const handleSelectedTask = (currentTask: TaskItem) => {
+    const handleSelectedTask = (currentTask: TaskItem, editMode?: boolean) => {
         setSelectedTask(currentTask);
+        if (editMode) {
+            setIsEditMode(true);
+        }
         setOpenTask(true)
     }
 
@@ -247,7 +251,10 @@ const TaskMainComp = () => {
 
             <TaskDetailsSheet openTask={openTask}
                 onOpenChange={setOpenTask}
-                task={selectedTask} />
+                task={selectedTask}
+                isEditMode={isEditMode}
+                setIsEditMode={setIsEditMode} />
+
         </div>
     );
 };

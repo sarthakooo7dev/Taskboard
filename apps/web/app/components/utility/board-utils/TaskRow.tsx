@@ -82,8 +82,8 @@ const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRow
         });
     }
 
-    const handleTask = () => {
-        handleSelectedTask(task)
+    const handleTask = (editMode?: boolean) => {
+        handleSelectedTask(task, editMode)
     }
 
     return (
@@ -93,7 +93,7 @@ const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRow
             style={{ gridTemplateColumns: columns }} >
 
             {/* TASK */}
-            <div className="group flex min-w-0 cursor-pointer flex-col justify-center px-4 py-2 " onClick={handleTask}>
+            <div className="group flex min-w-0 cursor-pointer flex-col justify-center px-4 py-2 " onClick={() => handleTask(false)}>
                 <h3 className="truncate text-sm font-medium tracking-wider text-gray-300 group-hover:text-gray-100">
                     {task.title}
                 </h3>
@@ -208,7 +208,7 @@ const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRow
 
                         <div className="flex flex-col">
                             {/* EDIT */}
-                            <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs tracking-wider text-gray-300 transition-colors duration-200 hover:bg-lg_grey/30" >
+                            <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs tracking-wider text-gray-300 transition-colors duration-200 hover:bg-lg_grey/30" onClick={() => handleTask(true)} >
                                 <Pencil size={12} />
                                 <span>
                                     Edit

@@ -84,11 +84,13 @@ export interface TaskRowProps {
   task: TaskItem
   availableStatus: availableStatusType[]
   boardId: string
-  handleSelectedTask: (currentTask: TaskItem) => void
+  handleSelectedTask: (currentTask: TaskItem, editMode?: boolean) => void
 }
 
 export type TaskDetailsSheetProps = {
   openTask: boolean
   onOpenChange: (open: boolean) => void
   task: TaskItem | null
+  isEditMode: boolean
+  setIsEditMode: (isEditMode: boolean) => void
 }

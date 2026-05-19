@@ -63,6 +63,8 @@ export const priorityStyles = {
   MEDIUM: 'bg-amber-500/10 text-amber-500 border border-amber-500/10',
 
   HIGH: 'bg-red-500/10 text-red-400 border border-red-500/10',
+
+  N_A: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/10',
 }
 
 const getSeed = (id: string) =>
@@ -132,4 +134,19 @@ export const formatEstimate = (minutes: number) => {
   const weeks = Math.floor(minutes / MINUTES_IN_WEEK)
 
   return `${weeks}w`
+}
+
+export const formatTaskDate = (date?: string) => {
+  if (!date) {
+    return '-- -- --'
+  }
+
+  const formatted = new Date(date).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: '2-digit',
+  })
+  const parts = formatted.split(' ')
+
+  return `${parts[0]} ${parts[1]}, ${parts[2]}`
 }
