@@ -1,17 +1,19 @@
 "use client";
 
-import { formatTaskDate, priorityStyles } from "@/app/lib/utils/ui/boardHelpers";
+import { formatEstimate, formatTaskDate, priorityStyles, statusStyles } from "@/app/lib/utils/ui/boardHelpers";
 import { TaskDetailsSheetProps } from "@/app/types/general.types";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, } from "@/components/ui/sheet";
-import { ArrowRightFromLine, CalendarClock, CalendarPlus, Check, Dot, FoldHorizontal, Maximize2, Pencil, X, Zap } from "lucide-react";
+import { ArrowRightFromLine, CalendarClock, CalendarPlus, Check, Clock, Dot, FoldHorizontal, Maximize2, Pencil, X, Zap } from "lucide-react";
+import Image from "next/image";
 import { title } from "process";
 import { useEffect, useState } from "react";
+import TaskTabs from "../Task-utils/TaskTabs";
 
 const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditMode }: TaskDetailsSheetProps) => {
 
     const [isExpanded, setIsExPanded] = useState<boolean>(false)
 
-
+    console.log(task)
 
     return (
         <Sheet open={openTask} onOpenChange={onOpenChange} >
@@ -20,7 +22,7 @@ const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditM
 
                 <div className="flex h-full flex-col">
                     {/* HEADER */}
-                    <SheetHeader className="border-b border-white/[0.06] px-3 py-4">
+                    <SheetHeader className="border-b border-white/[0.06] px-3 py-4 bd_grn">
                         <SheetTitle className="text-left  w-[94%] tracking-wider flex justify-between items-center">
 
                             {
@@ -46,7 +48,7 @@ const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditM
 
                     {/* BODY */}
                     <div className="flex-1 overflow-y-auto p-2 bd_grn">
-                        <div className=" ">
+                        <div className=" h-full  flex flex-col  ">
 
                             {/* # title container */}
                             <div className="  flex flex-col items-start">
@@ -68,7 +70,7 @@ const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditM
                             </div>
 
                             {/* # Priority and Due Date */}
-                            <div className="pl-1 flex items-center justify-start mt-2 gap-3 ">
+                            <div className="pl-1  flex items-center justify-start mt-2 gap-3 ">
                                 <div
                                     className={`inline-flex  rounded-md px-2 text-[10px]  tracking-widest ${priorityStyles[task?.Priority ?? "N_A"]}`} >
                                     {task?.Priority}
@@ -82,10 +84,74 @@ const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditM
                                 </div>
                             </div>
 
+                            {/* #Info indicators */}
+                            <div className={`px-1   grid gap-3  ${isExpanded ? "grid-cols-4 mt-3" : "grid-cols-2 mt-2"}`}>
+
+                                {/* #Status */}
+                                <div className=" p-2 bg-lg_grey/20 rounded-md">
+                                    <p className="text-gray-400 text-[10px] tracking-widest">STATUS</p>
+                                    <div className="p-1 px-2 tracking-widest text-[0.8rem] flex items-center gap-2   ">
+                                        <span className={` inline-block h-2 w-2 rounded-full ${statusStyles[task?.column?.type ?? "CUSTOM"].dot}`} />
+                                        {task?.column.name}</div>
+                                </div>
+
+                                {/* #Estimate */}
+                                <div className="p-2 bg-lg_grey/20 rounded-md">
+                                    <p className="text-gray-400 text-[10px] tracking-widest">ESTIMATE</p>
+                                    <div className="p-1 px-2 flex items-center gap-2 ">
+                                        <Clock size={18} className="text-yellow-600" />
+                                        <p className=" tracking-wider"> {formatEstimate(task?.estimate ?? 0)}</p>
+                                    </div>
+                                </div>
+
+                                {/* #Progress % */}
+                                <div className="p-2 bg-lg_grey/20 rounded-md">
+                                    <p className="text-gray-400 text-[10px] tracking-widest">PROGRESS</p>
+                                    <div className="p-1 px-2 flex gap-3 items-center ">
+                                        < div className="flex h-5 w-5 items-center justify-center rounded-full"
+                                            style={{
+                                                background: `conic-gradient(#398b57 ${task?.progress}%, #2b2b2b ${task?.progress}%)`,
+                                            }}  >
+                                            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[rgb(24,25,26)] text-[10px] text-white">
+
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-gray-300 text-xs tracking-widest flex flex-col">{task?.progress}%
+                                                <span className="text-[11px] leading-3 text-gray-400">completed</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* #Assignee */}
+                                <div className="p-2 bg-lg_grey/20 rounded-md">
+                                    <p className="text-gray-400 text-[10px] tracking-widest">ASSIGNEE</p>
+                                    <div className="p-1 flex  items-center gap-2 h-9">
+                                        <Image
+                                            src={task?.assignedTo.avatar ?? ""}
+                                            alt={task?.assignedTo.name ?? "image"}
+                                            width={25}
+                                            height={25}
+
+                                            className="cursor-pointer rounded-full border border-dk_grey"
+                                        />
+                                        <p className=" line-clamp-1">{task?.assignedTo.name}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div className=" mx-1 mt-2 flex-1 ">
+                                <TaskTabs taskId={task?.id ?? ""} />
+                            </div>
+
+
+
                             {/* CANCEL & SAVE BUTTONS */}
 
                             {isEditMode &&
-                                <div className="sticky mt-[22rem] border-t border-white/[0.06]  px-5 py-4 transition-all ease-in-out duration-200">
+                                <div className="sticky mt-[8rem] border-t border-white/[0.06]  px-5 py-4 transition-all ease-in-out duration-200">
                                     <div className={`grid ${isExpanded ? "grid-cols-4" : "grid-cols-2"}   gap-3`}>
                                         {/* CANCEL */}
                                         <button className={`flex h-8 min-w-[130px] items-center justify-center rounded-sm border border-gray-700 gap-2 px-5 text-sm font-medium tracking-widest text-gray-300 bg-lg_grey/10 hover:text-gray-200 hover:bg-lg_grey/30  ${isExpanded ? " col-start-3" : ""}`} onClick={() => setIsEditMode(false)} >

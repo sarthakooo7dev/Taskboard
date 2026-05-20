@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { TaskItem } from '../types/general.types'
+import { TaskItem, TaskStatus } from '../types/general.types'
 
 type UpdateTaskParams = {
   taskId: string
@@ -11,6 +11,8 @@ type UpdateTaskParams = {
   columnId?: string
   progress?: number
   assignedToId?: string
+  columnName: string
+  columnType: TaskStatus
 }
 
 type UseUpdateTaskProps = {
@@ -80,7 +82,12 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
                   }),
                   ...(updatedTask.columnId !== undefined && {
                     columnId: updatedTask.columnId,
-                    column: { ...task.column, id: updatedTask.columnId },
+                    column: {
+                      ...task.column,
+                      id: updatedTask.columnId,
+                      name: updatedTask.columnName,
+                      type: updatedTask.columnType,
+                    },
                   }),
                   ...(updatedTask.progress !== undefined && {
                     progress: updatedTask.progress,
@@ -116,7 +123,6 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
     onSuccess: () => {
       // Silent background sync
       // queryClient.invalidateQueries({ queryKey: ['board-tasks', boardId] })
-
       // console.log(
       //   'onSuccess ____ ' +
       //     JSON.stringify(queryClient.getQueryData(['board-tasks', boardId])),

@@ -79,6 +79,8 @@ const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRow
             taskId: task.id,
             columnId: selectedColumn.id,
             progress: updatedProgress,
+            columnName: selectedColumn.name,
+            columnType: selectedColumn.type
         });
     }
 
