@@ -4,8 +4,8 @@ import Image from "next/image";
 import { Loader, MessageCircleMore, MoreHorizontal, Pencil, Trash2, } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 
-import { TaskRowProps } from "@/app/types/general.types";
-import { formatEstimate, priorityStyles, statusStyles, } from "@/app/lib/utils/ui/boardHelpers";
+import { availableStatusType, TaskRowProps } from "@/app/types/general.types";
+import { calculateProgress, formatEstimate, priorityStyles, statusStyles, } from "@/app/lib/utils/ui/boardHelpers";
 import { TaskStatus } from "@/app/types/general.types";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
@@ -55,25 +55,7 @@ const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRow
         // By default preserve current progress
         let updatedProgress = task.progress;
 
-        // CASE 1: User is moving task TO Done
-        if (selectedColumn.type === "DONE") {
-            updatedProgress = 100;
-        }
-
-        // CASE 2: User is moving task TO NOT_STARTED
-        else if (selectedColumn.type === "NOT_STARTED") {
-            updatedProgress = 0;
-        }
-
-        // CASE 3: // Moving FROM Not Started to active status
-        else if (task.progress === 0) {
-            updatedProgress = 10;
-        }
-
-        // CASE 4: // Any NON-DONE status
-        else if (task.progress === 100) {
-            updatedProgress = 90;
-        }
+        updatedProgress = calculateProgress(selectedColumn, task.progress)
 
         updateTaskMutation.mutate({
             taskId: task.id,
@@ -83,6 +65,8 @@ const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRow
             columnType: selectedColumn.type
         });
     }
+
+
 
     const handleTask = (editMode?: boolean) => {
         handleSelectedTask(task, editMode)

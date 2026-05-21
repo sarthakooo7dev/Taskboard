@@ -249,11 +249,14 @@ const TaskMainComp = () => {
                 <div />
             </div>
 
-            <TaskDetailsSheet openTask={openTask}
+            <TaskDetailsSheet
+                key={tasks.id}
+                openTask={openTask}
                 onOpenChange={setOpenTask}
                 task={selectedTask}
                 isEditMode={isEditMode}
-                setIsEditMode={setIsEditMode} />
+                setIsEditMode={setIsEditMode}
+                availableStatus={availableStatus} />
 
         </div>
     );

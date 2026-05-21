@@ -93,4 +93,5 @@ export type TaskDetailsSheetProps = {
   task: TaskItem | null
   isEditMode: boolean
   setIsEditMode: (isEditMode: boolean) => void
+  availableStatus: availableStatusType[]
 }

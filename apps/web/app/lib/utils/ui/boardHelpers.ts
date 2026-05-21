@@ -1,3 +1,4 @@
+import { availableStatusType } from '@/app/types/general.types'
 import {
   Aperture,
   AudioWaveform,
@@ -65,6 +66,16 @@ export const priorityStyles = {
   HIGH: 'bg-red-500/10 text-red-400 border border-red-500/10',
 
   N_A: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/10',
+}
+
+export const priorityTextStyles = {
+  LOW: 'text-gray-400',
+
+  MEDIUM: 'text-amber-500',
+
+  HIGH: 'text-red-400',
+
+  N_A: 'text-cyan-400',
 }
 
 const getSeed = (id: string) =>
@@ -149,4 +160,32 @@ export const formatTaskDate = (date?: string) => {
   const parts = formatted.split(' ')
 
   return `${parts[0]} ${parts[1]}, ${parts[2]}`
+}
+
+export const calculateProgress = (
+  taskStatus: availableStatusType,
+  currentProgress: number,
+) => {
+  let newProgress = currentProgress
+  // CASE 1: User is moving task TO Done
+  if (taskStatus.type === 'DONE') {
+    return (newProgress = 100)
+  }
+
+  // CASE 2: User is moving task TO NOT_STARTED
+  else if (taskStatus.type === 'NOT_STARTED') {
+    return (newProgress = 0)
+  }
+
+  // CASE 3: // Moving FROM Not Started to active status
+  else if (currentProgress === 0) {
+    return (newProgress = 10)
+  }
+
+  // CASE 4: // Any NON-DONE status
+  else if (currentProgress === 100) {
+    return (newProgress = 90)
+  }
+
+  return newProgress
 }
