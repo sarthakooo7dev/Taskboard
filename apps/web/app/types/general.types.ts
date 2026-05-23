@@ -77,7 +77,7 @@ export interface availableStatusType {
   id: string
   name: string
   type: TaskStatus
-  order: number
+  order?: number
 }
 
 export interface TaskRowProps {
@@ -94,4 +94,12 @@ export type TaskDetailsSheetProps = {
   isEditMode: boolean
   setIsEditMode: (isEditMode: boolean) => void
   availableStatus: availableStatusType[]
+  boardId: string
+  membersList: boardMember[]
+}
+
+export type boardMember = {
+  id: string
+  name: string
+  avatar: string
 }

@@ -127,24 +127,30 @@ export const formatTimeAgo = (isoDate: string) => {
 
 export const formatEstimate = (minutes: number) => {
   const MINUTES_IN_HOUR = 60
-  const MINUTES_IN_DAY = 60 * 8
-  const MINUTES_IN_WEEK = MINUTES_IN_DAY * 5
+
+  const MINUTES_IN_DAY = 8 * 60
+
+  const MINUTES_IN_WEEK = 5 * MINUTES_IN_DAY
 
   if (minutes < MINUTES_IN_HOUR) {
     return `${minutes}m`
   }
+
   if (minutes < MINUTES_IN_DAY) {
-    const hours = Math.floor(minutes / MINUTES_IN_HOUR)
-    return `${hours}h`
+    const hours = minutes / MINUTES_IN_HOUR
+
+    return `${Number(hours.toFixed(1))}h`
   }
+
   if (minutes < MINUTES_IN_WEEK) {
-    const days = Math.floor(minutes / MINUTES_IN_DAY)
-    return `${days}d`
+    const days = minutes / MINUTES_IN_DAY
+
+    return `${Number(days.toFixed(1))}d`
   }
 
-  const weeks = Math.floor(minutes / MINUTES_IN_WEEK)
+  const weeks = minutes / MINUTES_IN_WEEK
 
-  return `${weeks}w`
+  return `${Number(weeks.toFixed(1))}w`
 }
 
 export const formatTaskDate = (date?: string) => {
@@ -188,4 +194,69 @@ export const calculateProgress = (
   }
 
   return newProgress
+}
+
+type ParseEstimateResult =
+  | {
+      success: true
+      minutes: number
+    }
+  | {
+      success: false
+      error: string
+    }
+
+export const parseEstimateToMinutes = (value: string): ParseEstimateResult => {
+  const normalized = value.toLowerCase().trim()
+
+  if (!normalized) {
+    return {
+      success: false,
+      error: 'Estimate is required',
+    }
+  }
+
+  const regex = /^(\d+\s*(w|week|weeks|d|day|days|h|hr|hour|hours|m|min|minute|minutes)\s*)+$/
+
+  if (!regex.test(normalized)) {
+    return {
+      success: false,
+      error: 'Invalid format. Examples: 2h, 3d, 1w 2d, 30m',
+    }
+  }
+
+  let totalMinutes = 0
+
+  const weekMatch = normalized.match(/(\d+)\s*(w|week|weeks)/g)
+
+  const dayMatch = normalized.match(/(\d+)\s*(d|day|days)/g)
+
+  const hourMatch = normalized.match(/(\d+)\s*(h|hr|hour|hours)/g)
+
+  const minuteMatch = normalized.match(/(\d+)\s*(m|min|minute|minutes)/g)
+
+  weekMatch?.forEach((item) => {
+    const num = Number(item.match(/\d+/)?.[0])
+    totalMinutes += num * 5 * 8 * 60
+  })
+
+  dayMatch?.forEach((item) => {
+    const num = Number(item.match(/\d+/)?.[0])
+    totalMinutes += num * 8 * 60
+  })
+
+  hourMatch?.forEach((item) => {
+    const num = Number(item.match(/\d+/)?.[0])
+    totalMinutes += num * 60
+  })
+
+  minuteMatch?.forEach((item) => {
+    const num = Number(item.match(/\d+/)?.[0])
+    totalMinutes += num
+  })
+
+  return {
+    success: true,
+    minutes: totalMinutes,
+  }
 }

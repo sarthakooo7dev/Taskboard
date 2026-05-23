@@ -2,7 +2,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { TaskItem, TaskStatus } from '../types/general.types'
+import { boardMember, TaskItem, TaskStatus } from '../types/general.types'
+import { BoardMember, PriorityType } from '@repo/db'
 
 type UpdateTaskParams = {
   taskId: string
@@ -10,9 +11,11 @@ type UpdateTaskParams = {
   description?: string
   columnId?: string
   progress?: number
-  assignedToId?: string
-  columnName: string
-  columnType: TaskStatus
+  assignedTo?: boardMember
+  columnName?: string
+  columnType?: TaskStatus
+  estimate?: number
+  Priority?: PriorityType
 }
 
 type UseUpdateTaskProps = {
@@ -28,9 +31,11 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
       taskId,
       title,
       description,
+      Priority,
       columnId,
+      estimate,
       progress,
-      assignedToId,
+      assignedTo,
     }: UpdateTaskParams) => {
       const res = await fetch(`/api/boards/${boardId}/tasks/${taskId}`, {
         method: 'PATCH',
@@ -39,9 +44,11 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
         body: JSON.stringify({
           ...(title !== undefined && { title }),
           ...(description !== undefined && { description }),
+          ...(Priority !== undefined && { Priority }),
           ...(columnId !== undefined && { columnId }),
+          ...(estimate !== undefined && { estimate }),
           ...(progress !== undefined && { progress }),
-          ...(assignedToId !== undefined && { assignedToId }),
+          ...(assignedTo?.id !== undefined && { assignedToId: assignedTo?.id }),
         }),
       })
 
@@ -80,6 +87,9 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
                   ...(updatedTask.description !== undefined && {
                     description: updatedTask.description,
                   }),
+                  ...(updatedTask.Priority !== undefined && {
+                    Priority: updatedTask.Priority,
+                  }),
                   ...(updatedTask.columnId !== undefined && {
                     columnId: updatedTask.columnId,
                     column: {
@@ -89,11 +99,14 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
                       type: updatedTask.columnType,
                     },
                   }),
+                  ...(updatedTask.estimate !== undefined && {
+                    estimate: updatedTask.estimate,
+                  }),
                   ...(updatedTask.progress !== undefined && {
                     progress: updatedTask.progress,
                   }),
-                  ...(updatedTask.assignedToId !== undefined && {
-                    assignedToId: updatedTask.assignedToId,
+                  ...(updatedTask.assignedTo !== undefined && {
+                    assignedTo: updatedTask.assignedTo,
                   }),
                 }
               }

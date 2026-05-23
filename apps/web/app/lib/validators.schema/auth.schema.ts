@@ -51,6 +51,8 @@ export const updateTaskSchema = z.object({
     .object({
       title: z.string().min(2).max(100).optional(),
       description: z.string().trim().optional(),
+      Priority: z.string().trim().optional(),
+      estimate: z.number().optional(),
       columnId: z.string().optional(),
       progress: z.number().min(0).max(100).optional(),
       assignedToId: z.string().nullable().optional(),

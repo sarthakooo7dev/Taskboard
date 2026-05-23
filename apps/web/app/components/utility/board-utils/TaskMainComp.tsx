@@ -54,6 +54,22 @@ const TaskMainComp = () => {
         // refetchOnMount: false, // 10 seconds
     });
 
+    const { data: membersData,
+        isLoading: isLoadingMembers, } = useQuery({
+            queryKey: ["board-members", params.boardId],
+            queryFn: async () => {
+                const res = await fetch(`/api/boards/${params.boardId}/members`);
+
+                if (!res.ok) {
+                    toast.error("Something went wrong. Try refresh");
+                    throw new Error(
+                        "Failed to fetch Members for the board",
+                    );
+                }
+                return res.json();
+            },
+        })
+
     // ### for testing purposes
     // const tasks = data?.data?.tasks.flatMap((task: any) =>
 
@@ -66,6 +82,9 @@ const TaskMainComp = () => {
 
     const tasks = data?.data?.tasks ?? [];
     // ### for testing purposes
+
+    const members = membersData?.data ?? [];
+    const membersList = members.map((val: any) => ({ id: val.user.id, name: val.user.name, avatar: val.user.avatar }))
 
     const availableStatus: availableStatusType[] = data?.data?.board?.columns ?? [];
 
@@ -250,13 +269,15 @@ const TaskMainComp = () => {
             </div>
 
             <TaskDetailsSheet
-                key={tasks.id}
+                key={selectedTask?.id}
                 openTask={openTask}
                 onOpenChange={setOpenTask}
                 task={selectedTask}
                 isEditMode={isEditMode}
                 setIsEditMode={setIsEditMode}
-                availableStatus={availableStatus} />
+                availableStatus={availableStatus}
+                boardId={params.boardId as string}
+                membersList={membersList} />
 
         </div>
     );

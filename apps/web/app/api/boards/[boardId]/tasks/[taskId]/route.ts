@@ -25,6 +25,8 @@ export async function PATCH(
     const {
       title,
       description,
+      Priority,
+      estimate,
       columnId,
       progress,
       assignedToId,
@@ -89,15 +91,39 @@ export async function PATCH(
       (title !== undefined && title !== existingTask.title) ||
       (description !== undefined && description !== existingTask.description)
 
+    const updateData: any = {}
+
+    if (title !== undefined) {
+      updateData.title = title
+    }
+
+    if (description !== undefined) {
+      updateData.description = description
+    }
+
+    if (columnId !== undefined) {
+      updateData.columnId = columnId
+    }
+
+    if (Priority !== undefined) {
+      updateData.Priority = Priority
+    }
+
+    if (estimate !== undefined) {
+      updateData.estimate = estimate
+    }
+
+    if (progress !== undefined) {
+      updateData.progress = progress
+    }
+
+    if (assignedToId !== undefined) {
+      updateData.assignedToId = assignedToId
+    }
+
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
-      data: {
-        ...(title !== undefined && { title }),
-        ...(description !== undefined && { description }),
-        ...(columnId !== undefined && { columnId }),
-        ...(progress !== undefined && { progress }),
-        ...(assignedToId !== undefined && { assignedToId }),
-      },
+      data: updateData,
     })
 
     let changeCounter = 0
@@ -233,6 +259,7 @@ export async function PATCH(
       { status: 200 },
     )
   } catch (err) {
+    console.log(err)
     if (err instanceof Error && err.message == 'UNAUTHORIZED') {
       return NextResponse.json(
         {
