@@ -158,7 +158,7 @@ export async function POST(
     })
 
     const receiverIds: string[] = []
-    if (mentionedUserIds.length > 0) {
+    if (mentionedUserIds?.length > 0) {
       const validMentions = await prisma.boardMember.findMany({
         where: {
           boardId,

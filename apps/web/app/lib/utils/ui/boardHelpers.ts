@@ -260,3 +260,48 @@ export const parseEstimateToMinutes = (value: string): ParseEstimateResult => {
     minutes: totalMinutes,
   }
 }
+
+export const formatCommentTime = (timestamp: string) => {
+  const date = new Date(timestamp)
+  const now = new Date()
+
+  const isToday =
+    date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear()
+
+  if (isToday) {
+    return date.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+    })
+  }
+
+  const yesterday = new Date()
+  yesterday.setDate(now.getDate() - 1)
+
+  const isYesterday =
+    date.getDate() === yesterday.getDate() &&
+    date.getMonth() === yesterday.getMonth() &&
+    date.getFullYear() === yesterday.getFullYear()
+
+  if (isYesterday) {
+    return `Yesterday ${date.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+    })}`
+  }
+
+  return (
+    date.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+    }) +
+    ', ' +
+    date.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+    })
+  )
+}

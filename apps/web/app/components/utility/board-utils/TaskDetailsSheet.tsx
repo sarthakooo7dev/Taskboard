@@ -15,6 +15,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { toast } from "sonner";
 import { useUpdateTask } from "@/app/hooks/useUpdateTask";
 import { PriorityType } from "@repo/db";
+import { parseAppSegmentConfig } from "next/dist/build/segment-config/app/app-segment-config";
 
 const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditMode, availableStatus, boardId, membersList }: TaskDetailsSheetProps) => {
 
@@ -101,14 +102,6 @@ const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditM
     }
 
     const handleSave = () => {
-        console.log("title : " + titleValue)
-        console.log("priority : " + priority)
-        console.log("status : " + JSON.stringify(status))
-        console.log("estimate : " + estimateInput + "---" + formatEstimate(estimateValue) + " ---" + estimateValue)
-        console.log("progress : " + progress)
-        console.log("assignee : " + JSON.stringify(assignee))
-        console.log("descValue : " + descValue)
-
         updateTaskMutation.mutate({
             taskId: task.id,
             title: titleValue,
@@ -437,8 +430,8 @@ const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditM
                             </div>
 
 
-                            <div className=" mx-1 mt-2 mb-1 flex-1 ">
-                                <TaskTabs taskId={task?.id ?? ""} />
+                            <div className="min-h-0 mx-1 mt-2 mb-1 flex-1 ">
+                                <TaskTabs taskId={task?.id} boardId={boardId} isEditMode={isEditMode} />
                             </div>
 
 

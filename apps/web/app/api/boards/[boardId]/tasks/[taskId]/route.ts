@@ -120,6 +120,7 @@ export async function PATCH(
     if (assignedToId !== undefined) {
       updateData.assignedToId = assignedToId
     }
+    
 
     const updatedTask = await prisma.task.update({
       where: { id: taskId },

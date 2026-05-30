@@ -135,7 +135,7 @@ const TaskRow = ({ task, availableStatus, boardId, handleSelectedTask }: TaskRow
                         <div className="h-full rounded-full bg-green-400/70 transition-all duration-300"
                             style={{ width: `${task.progress}%` }} />
                     </div>
-                    <p className="whitespace-nowrap text-[10px]  w-8 tracking-wider text-gray-300">
+                    <p className="whitespace-nowrap text-[11px]  w-8 tracking-wider text-gray-300">
                         {task.progress}%
                     </p>
                 </div>

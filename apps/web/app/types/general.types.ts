@@ -2,7 +2,7 @@ export type User = {
   name: string
   email: string
   id: string
-  avatar?: string
+  avatar: string
   createdAt: string
   role?: string
 }
@@ -102,4 +102,29 @@ export type boardMember = {
   id: string
   name: string
   avatar: string
+}
+
+export type TaskTabsProps = {
+  taskId: string
+  boardId: string
+  isEditMode: boolean
+}
+
+export type CommentTabProps = {
+  taskId: string
+  boardId: string
+  setCount: (count: number) => void
+  isEditMode: boolean
+}
+
+export type TaskComment = {
+  id: string
+  message: string
+  createdAt: string
+
+  user: {
+    id: string
+    name: string
+    avatar: string
+  }
 }
