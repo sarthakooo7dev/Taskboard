@@ -108,6 +108,7 @@ export type TaskTabsProps = {
   taskId: string
   boardId: string
   isEditMode: boolean
+  isExpanded: boolean
 }
 
 export type CommentTabProps = {
@@ -126,5 +127,23 @@ export type TaskComment = {
     id: string
     name: string
     avatar: string
+  }
+}
+
+export type ActivityTabProps = {
+  taskId: string
+  boardId: string
+  isExpanded: boolean
+}
+
+export type Activity = {
+  id: string
+  type: string
+  createdAt: string
+  metadata: Record<string, any>
+  actor: {
+    id: string
+    name: string
+    avatar?: string
   }
 }

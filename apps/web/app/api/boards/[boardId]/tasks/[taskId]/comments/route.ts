@@ -67,8 +67,6 @@ export async function GET(
       )
     }
 
-    console.error('Load comments error:', err)
-
     return NextResponse.json(
       {
         error: {

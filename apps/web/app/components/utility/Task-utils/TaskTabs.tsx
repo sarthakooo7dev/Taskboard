@@ -4,11 +4,12 @@ import { useState } from "react";
 import { MessageSquare, Activity, Paperclip, } from "lucide-react";
 import CommentsTab from "./CommentsTab";
 import { TaskTabsProps } from "@/app/types/general.types";
+import ActivityTab from "./ActivityTab";
 
 
 
 
-const TaskTabs = ({ taskId, boardId, isEditMode }: TaskTabsProps) => {
+const TaskTabs = ({ taskId, boardId, isEditMode, isExpanded }: TaskTabsProps) => {
 
     // Current active tab
     const [activeTab, setActiveTab,] = useState<"comments" | "activity">("comments");
@@ -45,7 +46,7 @@ const TaskTabs = ({ taskId, boardId, isEditMode }: TaskTabsProps) => {
                 {activeTab === "comments" && <CommentsTab taskId={taskId} boardId={boardId} setCount={setCount} isEditMode={isEditMode} />}
 
                 {/* ACTIVITY TAB */}
-                {activeTab === "activity" && (<div></div>)}
+                {activeTab === "activity" && <ActivityTab taskId={taskId} boardId={boardId} isExpanded={isExpanded} />}
 
             </div>
 

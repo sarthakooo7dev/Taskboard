@@ -431,7 +431,7 @@ const TaskDetailsSheet = ({ openTask, onOpenChange, task, isEditMode, setIsEditM
 
 
                             <div className="min-h-0 mx-1 mt-2 mb-1 flex-1 ">
-                                <TaskTabs taskId={task?.id} boardId={boardId} isEditMode={isEditMode} />
+                                <TaskTabs taskId={task?.id} boardId={boardId} isEditMode={isEditMode} isExpanded={isExpanded} />
                             </div>
 
 
