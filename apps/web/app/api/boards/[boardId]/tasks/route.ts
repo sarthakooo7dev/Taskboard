@@ -21,7 +21,7 @@ export async function POST(
     const validated = validateSchema(newTaskSchema, {
       body: reqBody,
     })
-    const { title, description, assignedToId } = validated.body
+    const { title, description, assignedToId, Priority } = validated.body
 
     const checkMembership = await checkBoardAccess(boardId, currentUserID)
 
@@ -67,6 +67,7 @@ export async function POST(
         columnId: defaultColumn.id,
         createdById: currentUserID,
         assignedToId,
+        Priority,
       },
     })
 

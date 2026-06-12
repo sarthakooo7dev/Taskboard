@@ -104,7 +104,7 @@ const CommentsTab = ({ taskId, boardId, setCount, isEditMode }: CommentTabProps)
 
                     return (
 
-                        <div key={val.id} className=' flex p-[3px] gap-2 '>
+                        <div key={val.id} className=' flex p-[3px] mt-1 gap-2 '>
                             <div className=' flex items-center justify-center shrink-0'>
                                 <Image
                                     src={val.user.avatar}

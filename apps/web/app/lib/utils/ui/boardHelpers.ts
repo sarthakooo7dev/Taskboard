@@ -1,4 +1,4 @@
-import { availableStatusType } from '@/app/types/general.types'
+import { availableStatusType, TaskPriority } from '@/app/types/general.types'
 import {
   Aperture,
   AudioWaveform,
@@ -30,6 +30,8 @@ const COLORS = [
   // 'bg-green-400/20 text-green-400',
   // 'bg-lime-400/20 text-lime-400',
 ]
+
+export const PRIORITIES: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW']
 
 export const statusStyles = {
   NOT_STARTED: {
@@ -66,6 +68,16 @@ export const priorityStyles = {
   HIGH: 'bg-red-500/10 text-red-400 border border-red-500/10',
 
   N_A: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/10',
+}
+
+export const priorityStyles_2 = {
+  LOW: ' text-gray-400 border border-gray-400/30',
+
+  MEDIUM: ' text-amber-500 border  border-amber-500/30',
+
+  HIGH: 'text-red-400 border border-red-500/30',
+
+  N_A: 'text-cyan-400 border border-cyan-500',
 }
 
 export const priorityTextStyles = {

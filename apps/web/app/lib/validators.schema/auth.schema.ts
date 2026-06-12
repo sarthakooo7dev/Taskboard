@@ -40,9 +40,10 @@ export const newStatusSchema = z.object({
 
 export const newTaskSchema = z.object({
   body: z.object({
-    title: z.string().trim().min(2).max(100),
+    title: z.string().trim().min(3).max(100),
     description: z.string().trim().optional(),
     assignedToId: z.string().optional(),
+    Priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
   }),
 })
 

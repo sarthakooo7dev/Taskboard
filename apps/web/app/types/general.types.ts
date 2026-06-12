@@ -1,3 +1,5 @@
+import { PriorityType } from '@repo/db'
+
 export type User = {
   name: string
   email: string
@@ -48,6 +50,7 @@ export type TaskStatus =
   | 'DONE'
   | 'CUSTOM'
 
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH'
 export interface TaskItem {
   id: string
   title: string
@@ -57,12 +60,13 @@ export interface TaskItem {
     name: string
     type: TaskStatus
   }
-  Priority: 'LOW' | 'MEDIUM' | 'HIGH'
+  Priority: TaskPriority
   estimate: number
   progress: number
   comments: number
   selected?: boolean
   createdAt: string
+  updatedAt: string
   assignedTo: {
     id: string
     name: string
@@ -85,6 +89,7 @@ export interface TaskRowProps {
   availableStatus: availableStatusType[]
   boardId: string
   handleSelectedTask: (currentTask: TaskItem, editMode?: boolean) => void
+  updateTaskListRef: React.RefObject<boolean>
 }
 
 export type TaskDetailsSheetProps = {
@@ -96,6 +101,7 @@ export type TaskDetailsSheetProps = {
   availableStatus: availableStatusType[]
   boardId: string
   membersList: boardMember[]
+  updateTaskListRef: React.RefObject<boolean>
 }
 
 export type boardMember = {
@@ -146,4 +152,37 @@ export type Activity = {
     name: string
     avatar?: string
   }
+}
+
+export type TaskToolbarProps = {
+  availableStatus: availableStatusType[]
+  membersList: boardMember[]
+  tasks: TaskItem[]
+  visibleTasks: TaskItem[]
+  setVisibleTasks: React.Dispatch<React.SetStateAction<TaskItem[]>>
+  registerApplyFilter: (fn: () => TaskItem[]) => void
+  boardId: string
+  updateTaskListRef: React.RefObject<boolean>
+}
+
+export type AppliedFilters = {
+  statuses: string[]
+  priorities: string[]
+  members: string[]
+}
+
+export interface CreateTaskModalProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  availableStatus: availableStatusType[]
+  membersList: boardMember[]
+  isPending?: boolean
+  onSubmit: (data: CreateTaskFormData) => void
+}
+
+export interface CreateTaskFormData {
+  title: string
+  description: string
+  priority?: TaskPriority
+  assignedToId?: string | null
 }
