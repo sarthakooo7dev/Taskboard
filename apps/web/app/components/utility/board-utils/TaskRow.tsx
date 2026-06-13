@@ -34,6 +34,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { useUserStore } from '@/app/store/user-store'
+import { useState } from 'react'
 
 const columns = `
     minmax(320px, 2.4fr)
@@ -52,8 +64,11 @@ const TaskRow = ({
   boardId,
   handleSelectedTask,
   updateTaskListRef,
+  currentUserMembership,
+  onDelete,
 }: TaskRowProps) => {
   const updateTaskMutation = useUpdateTask({ boardId })
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   const truncateDescription = (desc: string) => {
     if (!desc) return ''
@@ -90,6 +105,15 @@ const TaskRow = ({
 
   const handleTask = (editMode?: boolean) => {
     handleSelectedTask(task, editMode)
+  }
+
+  const canDelete =
+    currentUserMembership?.role === 'MANAGER' ||
+    currentUserMembership?.role === 'LEAD' ||
+    currentUserMembership?.id === task.createdById
+
+  const handleDeleteTask = () => {
+    onDelete(task.id)
   }
 
   return (
@@ -242,15 +266,50 @@ const TaskRow = ({
               </button>
 
               {/* DELETE */}
-              <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs tracking-wider text-red-500 transition-colors duration-200 hover:bg-lg_grey/30">
-                <Trash2 size={15} />
+              {canDelete && (
+                <button
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs tracking-wider text-red-500 transition-colors duration-200 hover:bg-lg_grey/30"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  <Trash2 size={15} />
 
-                <span>Delete</span>
-              </button>
+                  <span>Delete</span>
+                </button>
+              )}
             </div>
           </PopoverContent>
         </Popover>
       </div>
+
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent className="border border-white/[0.06] bg-dk_grey">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-gray-300 font-semibold tracking-wider flex items-center gap-1 ">
+              <Trash2 size={16} className="mt-[-2px]" /> <p>Delete Task </p>
+            </AlertDialogTitle>
+
+            <AlertDialogDescription className="text-gray-400 tracking-wider px-2">
+              Remove "{task.title}" permanently ?
+              <span className="block pt-2 text-xs">
+                This action cannot be undone.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-white/[0.06] bg-transparent tracking-wider text-gray-300 hover:bg-lg_grey/30">
+              Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={handleDeleteTask}
+              className="bg-red-600 text-gray-200 tracking-wider hover:text-gray-50"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

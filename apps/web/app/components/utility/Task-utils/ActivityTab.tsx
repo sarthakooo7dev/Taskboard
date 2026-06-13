@@ -47,8 +47,8 @@ const getActivityContent = (activity: Activity) => {
 
     default:
       return {
-        icon: <StickyNote size={11} className="text-gray-400" />,
-        bg_style: 'bg-gray-300',
+        icon: <StickyNote size={11} className="text-gray-300" />,
+        bg_style: 'bg-gray-500',
         text: `${actor} performed an action`,
       }
   }

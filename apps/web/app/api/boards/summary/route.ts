@@ -60,7 +60,7 @@ export async function GET() {
       },
       orderBy: {
         board: {
-          updatedAt: 'desc',
+          createdAt: 'desc',
         },
       },
     })

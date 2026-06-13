@@ -24,6 +24,17 @@ export type BoardModalState = {
   closeModal: () => void
 }
 
+export type BoardDetails = {
+  id: string
+  title: string
+  description: string
+}
+
+export type BoardStore = {
+  currentBoard: BoardDetails | null
+  setCurrentBoard: (board: BoardDetails) => void
+}
+
 export type Members = {
   id: string
   name: string
@@ -66,6 +77,7 @@ export interface TaskItem {
   comments: number
   selected?: boolean
   createdAt: string
+  createdById: string
   updatedAt: string
   assignedTo: {
     id: string
@@ -90,6 +102,8 @@ export interface TaskRowProps {
   boardId: string
   handleSelectedTask: (currentTask: TaskItem, editMode?: boolean) => void
   updateTaskListRef: React.RefObject<boolean>
+  currentUserMembership: boardMember
+  onDelete: (taskId: string) => void
 }
 
 export type TaskDetailsSheetProps = {
@@ -108,6 +122,7 @@ export type boardMember = {
   id: string
   name: string
   avatar: string
+  role: string
 }
 
 export type TaskTabsProps = {

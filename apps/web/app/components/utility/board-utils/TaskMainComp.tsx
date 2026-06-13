@@ -11,15 +11,20 @@ import {
   Info,
 } from 'lucide-react'
 
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import { toast } from 'sonner'
 
-import { availableStatusType, TaskItem } from '@/app/types/general.types'
+import {
+  availableStatusType,
+  boardMember,
+  TaskItem,
+} from '@/app/types/general.types'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import TaskDetailsSheet from './TaskDetailsSheet'
 import TaskToolbar from './TaskTollbar'
+import { useUserStore } from '@/app/store/user-store'
 
 const columns = `
     minmax(320px, 2.4fr)
@@ -65,6 +70,7 @@ const TaskMainComp = () => {
   })
 
   const tasks = data?.data?.tasks ?? []
+  console.log(tasks)
   const [visibleTasks, setVisibleTasks] = useState<TaskItem[]>(tasks)
 
   const members = membersData?.data ?? []
@@ -72,7 +78,13 @@ const TaskMainComp = () => {
     id: val.user.id,
     name: val.user.name,
     avatar: val.user.avatar,
+    role: val.role,
   }))
+
+  const User = useUserStore((s) => s.user)
+  const currentUserMembership = membersList.find(
+    (val: boardMember) => val.id === User?.id,
+  )
 
   const availableStatus: availableStatusType[] =
     data?.data?.board?.columns ?? []
@@ -111,6 +123,51 @@ const TaskMainComp = () => {
       }
     }
   }, [tasks])
+
+  const queryClient = useQueryClient()
+
+  const deleteTaskMutation = useMutation({
+    mutationFn: async (taskId: string) => {
+      const response = await fetch(
+        `/api/boards/${params.boardId}/tasks/${taskId}`,
+        {
+          method: 'DELETE',
+        },
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        if (response.status === 403 || response.status === 404) {
+          throw new Error(data.message)
+        }
+        throw new Error('Failed to delete task')
+      }
+
+      return data
+    },
+
+    onMutate: async (taskId) => {
+      const previousTasks = visibleTasks
+
+      setVisibleTasks((prev) => prev.filter((t) => t.id !== taskId))
+
+      return { previousTasks }
+    },
+
+    onError: (err, taskId, context) => {
+      setVisibleTasks(context!.previousTasks)
+      toast.error(`Failed to delete task ( ${err.message})`)
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['board-tasks', params.boardId],
+      })
+
+      toast.success('Task deleted')
+    },
+  })
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-md">
@@ -178,6 +235,8 @@ const TaskMainComp = () => {
                         handleSelectedTask={handleSelectedTask}
                         boardId={params.boardId as string}
                         updateTaskListRef={updateTaskListRef}
+                        currentUserMembership={currentUserMembership}
+                        onDelete={(taskId) => deleteTaskMutation.mutate(taskId)}
                       />
                     ))}
                   </div>

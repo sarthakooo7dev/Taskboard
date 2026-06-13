@@ -251,6 +251,12 @@ export async function PATCH(
       })
     }
 
+    await prisma.board.update({
+      where: { id: boardId },
+      data: {
+        lastActivityAt: new Date(),
+      },
+    })
     return NextResponse.json(
       {
         message: 'Task updated successfully',

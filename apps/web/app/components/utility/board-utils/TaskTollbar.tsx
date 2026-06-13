@@ -456,10 +456,10 @@ const TaskToolbar = ({
 
         <Button
           variant="outline"
-          className="gap-2 bg-purple-500/50 text-gray-100 tracking-wider"
+          className="gap-2 bg-purple-500/60 text-gray-100 tracking-wider"
           onClick={() => setOpenTaskModal(true)}
         >
-          <Plus size={16} />
+          <Plus size={17} />
           Add Task
         </Button>
       </div>
@@ -502,7 +502,7 @@ const TaskToolbar = ({
           })}
 
           <div
-            className="flex items-center gap-2 rounded-full  px-3 py-1 text-xs text-gray-300 tracking-widest cursor-pointer hover:text-gray-200"
+            className="flex items-center gap-2 rounded-full  px-3 py-1 text-xs text-gray-300 tracking-widest cursor-pointer hover:text-gray-200 hover:bg-lg_grey/70"
             onClick={clearFilters}
           >
             <RefreshCcw size={13} /> Reset
