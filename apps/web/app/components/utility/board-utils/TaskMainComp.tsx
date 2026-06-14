@@ -25,6 +25,7 @@ import { useEffect, useRef, useState } from 'react'
 import TaskDetailsSheet from './TaskDetailsSheet'
 import TaskToolbar from './TaskTollbar'
 import { useUserStore } from '@/app/store/user-store'
+import InfoToolbar from './InfoToolbar'
 
 const columns = `
     minmax(320px, 2.4fr)
@@ -124,6 +125,9 @@ const TaskMainComp = () => {
     }
   }, [tasks])
 
+  const blockedCount: number = tasks.filter(
+    (taskVal: TaskItem) => taskVal.column.type === 'BLOCKED',
+  ).length
   const queryClient = useQueryClient()
 
   const deleteTaskMutation = useMutation({
@@ -174,7 +178,9 @@ const TaskMainComp = () => {
       {/* MAIN */}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {/* INFO */}
-        <div className="m-1 border border-white/[0.04] p-4">info cards</div>
+        <div className="m-1  p-4">
+          <InfoToolbar blockedCount={blockedCount} totalTasks={tasks.length} />
+        </div>
 
         {/* TOOLBAR */}
         <div className="mx-1 mb-1  px-4 py-1">

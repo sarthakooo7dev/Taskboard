@@ -201,3 +201,8 @@ export interface CreateTaskFormData {
   priority?: TaskPriority
   assignedToId?: string | null
 }
+
+export interface InfoToolbarProps {
+  blockedCount: number
+  totalTasks: number
+}

@@ -147,7 +147,11 @@ const TaskRow = ({
             )}
           </SelectTrigger>
 
-          <SelectContent className="cursor-pointer bg-dk_grey p-2 text-gray-300">
+          <SelectContent
+            side="bottom"
+            align="end"
+            className="cursor-pointer bg-dk_grey p-2 text-gray-300"
+          >
             {availableStatus.map((val) => {
               return (
                 <SelectItem
@@ -291,12 +295,12 @@ const TaskRow = ({
             <AlertDialogDescription className="text-gray-400 tracking-wider px-2">
               Remove "{task.title}" permanently ?
               <span className="block pt-2 text-xs">
-                This action cannot be undone.
+                * This action cannot be undone.
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <AlertDialogFooter>
+          <AlertDialogFooter className="p-2 pr-4">
             <AlertDialogCancel className="border-white/[0.06] bg-transparent tracking-wider text-gray-300 hover:bg-lg_grey/30">
               Cancel
             </AlertDialogCancel>

@@ -88,7 +88,7 @@ const CreateTaskModal = ({
               Create Task
             </DialogTitle>
           </DialogHeader>
-
+          <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           <div className="mt-3 space-y-3">
             <Input
               placeholder="Task title..."
