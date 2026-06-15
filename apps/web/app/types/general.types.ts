@@ -206,3 +206,60 @@ export interface InfoToolbarProps {
   blockedCount: number
   totalTasks: number
 }
+
+export type WorkspaceOverviewItem = {
+  id: string
+  name: string
+  progress: number
+  lastActivityAt: string
+}
+export type TeamWorkloadItem = {
+  id: string
+  name: string
+  avatar: string | null
+  activeTasks: number
+  workloadMinutes: number
+}
+export type DashboardTaskItem = {
+  id: string
+  title: string
+  estimate: number
+  Priority: 'LOW' | 'MEDIUM' | 'HIGH'
+
+  updatedAt: string
+
+  progress: number
+
+  board: {
+    id: string
+    name: string
+  }
+
+  assignedTo: {
+    id: string
+    name: string
+    avatar: string | null
+  }
+
+  column: {
+    type: 'NOT_STARTED' | 'IN_PROGRESS' | 'BLOCKED' | 'DONE' | 'CUSTOM'
+  }
+}
+export type PriorityQueueItem = DashboardTaskItem
+
+export type RecentWorkItem = DashboardTaskItem
+
+export type DashboardData = {
+  workspaceOverview: WorkspaceOverviewItem[]
+
+  teamWorkload: TeamWorkloadItem[]
+
+  priorityQueue: PriorityQueueItem[]
+
+  recentWork: RecentWorkItem[]
+}
+
+export type WorkloadProps = {
+  workloadData: TeamWorkloadItem[]
+  isLoading: boolean
+}
