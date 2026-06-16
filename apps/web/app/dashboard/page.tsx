@@ -2,8 +2,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
-import { DashboardData, TeamWorkloadItem } from '../types/general.types'
+import {
+  DashboardData,
+  TeamWorkloadItem,
+  WorkspaceOverviewItem,
+} from '../types/general.types'
 import Workload from '../components/utility/dashboard-utils/Workload'
+import WorkspaceOverview from '../components/utility/dashboard-utils/WorkspaceOverview'
 
 export default function Page() {
   const { data, isLoading, isError } = useQuery({
@@ -22,6 +27,8 @@ export default function Page() {
 
   const dashboardData: DashboardData = data?.data
   const workloadData: TeamWorkloadItem[] = dashboardData?.teamWorkload
+  const workspaceData: WorkspaceOverviewItem[] =
+    dashboardData?.workspaceOverview
   console.log(workloadData)
 
   useEffect(() => {
@@ -44,9 +51,14 @@ export default function Page() {
           {/* #right_elements */}
           <div className=" grid grid-rows-[1fr_1fr_1fr] gap-2">
             {/* #Workspace_overview */}
-            <div className="border border-lg_grey">Workspace_overview</div>
+            <div className="bg-lg_grey/30 rounded-lg">
+              <WorkspaceOverview
+                workspaceData={workspaceData ?? []}
+                isLoading={isLoading}
+              />{' '}
+            </div>
             {/* #Team_workload */}
-            <div className="border border-lg_grey bg-lg_grey/30 rounded-md">
+            <div className=" bg-lg_grey/30 rounded-lg">
               <Workload
                 workloadData={workloadData ?? []}
                 isLoading={isLoading}

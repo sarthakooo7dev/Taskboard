@@ -17,6 +17,9 @@ export async function GET() {
           },
         },
       },
+      orderBy: {
+        lastActivityAt: 'desc',
+      },
 
       select: {
         id: true,
@@ -26,6 +29,11 @@ export async function GET() {
         tasks: {
           select: {
             progress: true,
+            column: {
+              select: {
+                type: true,
+              },
+            },
           },
         },
       },
@@ -87,18 +95,42 @@ export async function GET() {
     // ==========================
 
     const workspaceOverview = boards.map((board) => {
-      const totalProgress = board.tasks.reduce(
-        (sum, task) => sum + task.progress,
-        0,
-      )
+      let doneTasks = 0
+      let inProgressTasks = 0
+      let blockedTasks = 0
+
+      let totalProgress = 0
+
+      for (const task of board.tasks) {
+        totalProgress += task.progress
+
+        switch (task.column.type) {
+          case 'DONE':
+            doneTasks++
+            break
+
+          case 'IN_PROGRESS':
+            inProgressTasks++
+            break
+
+          case 'BLOCKED':
+            blockedTasks++
+            break
+        }
+      }
 
       return {
         id: board.id,
         name: board.name,
+        totalTasks: board.tasks.length,
+        doneTasks,
+        inProgressTasks,
+        blockedTasks,
         progress:
           board.tasks.length > 0
             ? Math.round(totalProgress / board.tasks.length)
             : 0,
+
         lastActivityAt: board.lastActivityAt,
       }
     })

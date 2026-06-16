@@ -210,6 +210,10 @@ export interface InfoToolbarProps {
 export type WorkspaceOverviewItem = {
   id: string
   name: string
+  totalTasks: number
+  doneTasks: number
+  inProgressTasks: number
+  blockedTasks: number
   progress: number
   lastActivityAt: string
 }
@@ -261,5 +265,10 @@ export type DashboardData = {
 
 export type WorkloadProps = {
   workloadData: TeamWorkloadItem[]
+  isLoading: boolean
+}
+
+export type WorkspaceProps = {
+  workspaceData: WorkspaceOverviewItem[]
   isLoading: boolean
 }
