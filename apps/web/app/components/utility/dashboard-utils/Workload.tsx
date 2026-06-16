@@ -15,7 +15,7 @@ const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
     1,
   )
 
-  const visibleData = workloadData.slice(0, 3)
+  const visibleData = workloadData.slice(0, 4)
 
   return (
     <div className="p-1  h-full flex flex-col ">
@@ -28,12 +28,12 @@ const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
 
         <div className="flex items-center gap-1 text-[10px] tracking-wide text-gray-400">
           <Layers2 size={10} />
-          Top 3 by workload
+          Top 4 by workload
         </div>
       </div>
 
       {/* Users */}
-      <div className=" p-1  flex-1 grid grid-rows-3">
+      <div className=" p-2  flex-1 grid grid-rows-4">
         {isLoading ? (
           <WorkloadSkeleton />
         ) : (

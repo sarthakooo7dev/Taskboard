@@ -78,6 +78,7 @@ export async function POST(
       entityId: task.id,
       metadata: {
         title: task.title,
+        modifiedBy: checkMembership.user.name,
       },
     })
 

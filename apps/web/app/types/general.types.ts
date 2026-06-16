@@ -272,3 +272,24 @@ export type WorkspaceProps = {
   workspaceData: WorkspaceOverviewItem[]
   isLoading: boolean
 }
+
+export type ActivityType =
+  | 'TASK_CREATED'
+  | 'TASK_MOVED'
+  | 'TASK_UPDATED'
+  | 'TASK_DELETED'
+  | 'TASK_ASSIGNED'
+  | 'COMMENT_CREATED'
+
+export type ActivityData = {
+  id: string
+  type: ActivityType
+  entityId: string
+  metadata: Record<string, any>
+  createdAt: string
+  actor: Members
+  board: {
+    id: string
+    name: string
+  }
+}

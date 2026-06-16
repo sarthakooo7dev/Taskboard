@@ -9,6 +9,7 @@ import {
 } from '../types/general.types'
 import Workload from '../components/utility/dashboard-utils/Workload'
 import WorkspaceOverview from '../components/utility/dashboard-utils/WorkspaceOverview'
+import ActivityFeed from '../components/utility/dashboard-utils/ActivityFeed'
 
 export default function Page() {
   const { data, isLoading, isError } = useQuery({
@@ -43,13 +44,23 @@ export default function Page() {
         {/* #Main_grid */}
         <div className="grid grid-cols-[1fr_0.5fr] gap-3 p-2 h-full">
           {/* #left_elements */}
-          <div className=" grid grid-rows-2 gap-3">
+          <div className=" grid grid-rows-[1fr_0.7fr] gap-3">
             <div className="border border-lg_grey">priority queue</div>
-            <div className="border border-lg_grey">recen towrk</div>
+            <div className=" grid grid-cols-2 gap-3">
+              {/* #recent_work */}
+              <div className=" bg-lg_grey/30 rounded-lg">recent work</div>
+              {/* #Team_workload */}
+              <div className=" bg-lg_grey/30 rounded-lg">
+                <Workload
+                  workloadData={workloadData ?? []}
+                  isLoading={isLoading}
+                />
+              </div>
+            </div>
           </div>
 
           {/* #right_elements */}
-          <div className=" grid grid-rows-[1fr_1fr_1fr] gap-2">
+          <div className=" grid grid-rows-[0.7fr_1fr] gap-2">
             {/* #Workspace_overview */}
             <div className="bg-lg_grey/30 rounded-lg">
               <WorkspaceOverview
@@ -57,15 +68,11 @@ export default function Page() {
                 isLoading={isLoading}
               />{' '}
             </div>
-            {/* #Team_workload */}
-            <div className=" bg-lg_grey/30 rounded-lg">
-              <Workload
-                workloadData={workloadData ?? []}
-                isLoading={isLoading}
-              />
-            </div>
+
             {/* #Recent_activity */}
-            <div className="border border-lg_grey">Recent_activity</div>
+            <div className="bg-lg_grey/30 rounded-lg">
+              <ActivityFeed />{' '}
+            </div>
           </div>
         </div>
       </div>

@@ -37,26 +37,31 @@ export const statusStyles = {
   NOT_STARTED: {
     dot: 'bg-gray-400',
     label: 'Not Started',
+    text: 'text-gray-400',
   },
 
   IN_PROGRESS: {
     dot: 'bg-green-500',
     label: 'In Progress',
+    text: 'text-green-500',
   },
 
   BLOCKED: {
     dot: 'bg-red-500',
     label: 'Blocked',
+    text: 'text-red-400',
   },
 
   DONE: {
     dot: 'bg-blue-400',
     label: 'Done',
+    text: 'text-blue-400',
   },
 
   CUSTOM: {
     dot: 'bg-purple-400',
     label: 'Custom',
+    text: 'text-purple-400',
   },
 }
 

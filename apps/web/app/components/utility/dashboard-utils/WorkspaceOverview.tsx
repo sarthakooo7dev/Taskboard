@@ -15,8 +15,9 @@ import { getBoardVisual } from '@/app/lib/utils/ui/boardHelpers'
 import WorkspaceSkeleton from '../loader-components/WorkspaceSkeleton'
 
 const WorkspaceOverview = ({ workspaceData, isLoading }: WorkspaceProps) => {
-  const workspaceVisibleData = workspaceData.slice(0, 2)
-
+  const workspaceVisibleData = workspaceData.slice(0, 3)
+  const truncateName = (name: string, max = 15) =>
+    name.length > max ? `${name.slice(0, max)}...` : name
   return (
     <div className="flex h-full flex-col p-1">
       {/* Header */}
@@ -34,7 +35,7 @@ const WorkspaceOverview = ({ workspaceData, isLoading }: WorkspaceProps) => {
         </div>
       </div>
 
-      <div className="flex-1 grid grid-rows-2 px-2 p-1">
+      <div className="flex-1 grid grid-rows-3 p-2">
         {isLoading ? (
           <WorkspaceSkeleton />
         ) : (
@@ -53,8 +54,8 @@ const WorkspaceOverview = ({ workspaceData, isLoading }: WorkspaceProps) => {
                   </div>
 
                   <div>
-                    <p className="text-[13px] tracking-wide truncate text-gray-300">
-                      {board.name}
+                    <p className="text-[13px] tracking-wider truncate text-gray-300">
+                      {truncateName(board.name)}
                     </p>
 
                     <p className=" text-[11px] text-gray-500">
@@ -76,7 +77,7 @@ const WorkspaceOverview = ({ workspaceData, isLoading }: WorkspaceProps) => {
                     </div>
 
                     <div className="pl-3">
-                      <span className="text-xs tracking-wide font-medium text-gray-300">
+                      <span className="text-xs tracking-wider font-medium text-gray-400">
                         {board.progress}%
                       </span>
                     </div>

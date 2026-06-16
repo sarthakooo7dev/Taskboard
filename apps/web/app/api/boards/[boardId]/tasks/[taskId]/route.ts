@@ -364,7 +364,7 @@ export async function DELETE(
       actorId: currentUserID,
       type: ActivityType.TASK_DELETED,
       entityId: task.id,
-      metadata: { title: task.title, deletedBy: checkMembership.user.name },
+      metadata: { title: task.title, modifiedBy: checkMembership.user.name },
     })
 
     return NextResponse.json(

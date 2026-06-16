@@ -1,7 +1,7 @@
 const WorkloadSkeleton = () => {
   return (
     <>
-      {Array.from({ length: 3 }).map((_, index) => (
+      {Array.from({ length: 4 }).map((_, index) => (
         <div key={index} className="flex items-center gap-2 px-1">
           {/* Avatar */}
           <div className="h-[22px] w-[22px] animate-pulse rounded-full bg-white/5" />
