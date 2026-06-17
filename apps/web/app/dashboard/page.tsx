@@ -10,6 +10,7 @@ import {
 import Workload from '../components/utility/dashboard-utils/Workload'
 import WorkspaceOverview from '../components/utility/dashboard-utils/WorkspaceOverview'
 import ActivityFeed from '../components/utility/dashboard-utils/ActivityFeed'
+import { useDashboardStore } from '../store/dash-store'
 
 export default function Page() {
   const { data, isLoading, isError } = useQuery({
@@ -23,14 +24,13 @@ export default function Page() {
       return res.json()
     },
     staleTime: 60 * 1000,
-    // refetchOnMount: false, // 10 seconds
+    // refetchOnMount: false, //
   })
 
   const dashboardData: DashboardData = data?.data
   const workloadData: TeamWorkloadItem[] = dashboardData?.teamWorkload
   const workspaceData: WorkspaceOverviewItem[] =
     dashboardData?.workspaceOverview
-  console.log(workloadData)
 
   useEffect(() => {
     if (isError) {

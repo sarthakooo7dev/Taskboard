@@ -13,11 +13,11 @@ const WorkloadSkeleton = () => {
           <div className="h-3 w-[45px] animate-pulse rounded bg-white/5" />
 
           {/* Workload bars */}
-          <div className="flex flex-1 gap-[3px]">
+          <div className="flex  gap-[3px]">
             {Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
-                className="h-[5px] flex-1 animate-pulse rounded-sm bg-white/5"
+                className="h-[6px] w-[8px] flex-1 animate-pulse rounded-sm bg-white/5"
               />
             ))}
           </div>

@@ -72,7 +72,7 @@ const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
                   {Array.from({ length: 10 }).map((_, index) => (
                     <div
                       key={index}
-                      className={`h-[5px]  flex-1 rounded-sm ${
+                      className={`h-[7px] w-[8px]   rounded-sm ${
                         index < activeBars ? 'bg-violet-500/70' : 'bg-white/5'
                       }`}
                     />

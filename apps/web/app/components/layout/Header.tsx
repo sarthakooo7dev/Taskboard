@@ -7,6 +7,8 @@ import ThemeToggle from '../utility/header-utils/ThemeToggle'
 import Notify from '../utility/header-utils/Notify'
 import CreateBoardBtn from '../utility/header-utils/CreateBoardBtn'
 import { useBoardStore } from '@/app/store/board-store'
+import { useDashboardStore } from '@/app/store/dash-store'
+import { RefreshCw } from 'lucide-react'
 
 const Header = () => {
   const path = usePathname()
@@ -27,7 +29,8 @@ const Header = () => {
   const headerInfo = SIDEBAR_CONFIG[0]?.items.find((val) => val.href === path)
   const title = isBoardpage ? boardTitle : headerInfo?.label
   const info = isBoardpage ? boardDesc : headerInfo?.info
-  console.log(isBoardpage + '-a---' + title + '--a--' + info)
+
+  const { sync, setSync } = useDashboardStore()
 
   return (
     <div className="flex justify-center border-b border-b-dk_border p-2 h-[4rem] bg-dk_grey">
@@ -40,6 +43,13 @@ const Header = () => {
         </p>
       </div>
       <div className=" flex justify-end  items-center p-1 w-[30%] gap-3 ">
+        {sync && (
+          <div className="mr-8 flex items-center gap-2 text-gray-400 text-xs tracking-wider">
+            {' '}
+            <RefreshCw size={15} className="animate-spin" /> syncing
+          </div>
+        )}
+
         {isWorkspacePage && <CreateBoardBtn />}
 
         <ThemeToggle />

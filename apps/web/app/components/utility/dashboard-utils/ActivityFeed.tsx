@@ -6,9 +6,13 @@ import { ActivityData, TaskStatus } from '@/app/types/general.types'
 import { formatTimeAgo, statusStyles } from '@/app/lib/utils/ui/boardHelpers'
 import { Span } from 'next/dist/trace'
 import { useUserStore } from '@/app/store/user-store'
+import { useDashboardStore } from '@/app/store/dash-store'
+import { toast } from 'sonner'
+import { useEffect } from 'react'
 
 const ActivityFeed = () => {
-  const { data, isLoading } = useQuery({
+  const { sync, setSync } = useDashboardStore()
+  const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ['dashboard-activity'],
     queryFn: async () => {
       const res = await fetch('/api/dashboard/activity')
@@ -22,6 +26,13 @@ const ActivityFeed = () => {
 
     staleTime: 60 * 1000,
   })
+
+  useEffect(() => {
+    setSync(isFetching)
+    if (isError) {
+      toast.error('Failed to load activity. Please try refreshing again.')
+    }
+  }, [isError, isFetching])
 
   const activityData: ActivityData[] = data?.data ?? []
 
@@ -41,7 +52,10 @@ const ActivityFeed = () => {
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
               <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
-              created a task
+              created a task{' '}
+              <span className="text-purple-400 text-[11px]">
+                {activity.metadata.title}
+              </span>
             </p>
           ),
         }
@@ -70,7 +84,10 @@ const ActivityFeed = () => {
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
               <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
-              updated task details
+              updated task{' '}
+              <span className="text-purple-400 text-[11px]">
+                {activity.metadata.title}
+              </span>
             </p>
           ),
         }
@@ -93,7 +110,7 @@ const ActivityFeed = () => {
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
               <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
               assigned task to{' '}
-              <span className="text-purple-400">
+              <span className="text-purple-400 text-[11px]">
                 {truncateName(activity.metadata.assignedTo ?? '')}
               </span>
             </p>
@@ -104,9 +121,12 @@ const ActivityFeed = () => {
         return {
           action: 'commented',
           info: (
-            <p className="tracking-wide line-clamp-2 text-[13px] leading-5">
+            <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
               <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
-              added a comment
+              added a comment on task{' '}
+              <span className="text-purple-400 text-[11px]">
+                {activity.metadata.commentedOn}
+              </span>
             </p>
           ),
         }
@@ -115,7 +135,7 @@ const ActivityFeed = () => {
         return {
           action: activity.type,
           info: (
-            <p className="tracking-wide line-clamp-2 text-[13px] leading-5">
+            <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
               <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
               performed an action
             </p>
@@ -157,7 +177,9 @@ const ActivityFeed = () => {
         ) : (
           <>
             {/* Timeline */}
-            <div className="absolute left-[24px] top-[18px] bottom-[18px] w-px bg-white/10" />
+            <div className="absolute left-[24px] top-[18px] bottom-[18px] w-px bg-white/10">
+              <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full border-2 border-white/20" />
+            </div>
 
             <div className="h-full grid grid-rows-4 pt-1 ">
               {visibleActivityData.map((activity) => {

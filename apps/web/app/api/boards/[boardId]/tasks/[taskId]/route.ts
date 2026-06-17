@@ -50,7 +50,7 @@ export async function PATCH(
           id: columnId,
           boardId,
         },
-        select: { id: true, name: true },
+        select: { id: true, name: true, type: true },
       })
 
       if (!columnExists) {
@@ -137,7 +137,7 @@ export async function PATCH(
         type: ActivityType.TASK_MOVED,
         entityId: taskId,
         metadata: {
-          toStatus: columnExists!.name,
+          toStatus: columnExists!.type,
           modifiedBy: checkMembership.user.name,
         },
       })
@@ -211,7 +211,7 @@ export async function PATCH(
         info: {
           isStatusChanged,
           oldStatusId: existingTask.columnId,
-          newStatus: columnExists?.name,
+          newStatus: columnExists?.type,
         },
         taskId,
         senderId: currentUserID,
