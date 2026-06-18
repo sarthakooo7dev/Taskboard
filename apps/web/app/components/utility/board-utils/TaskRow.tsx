@@ -94,6 +94,7 @@ const TaskRow = ({
 
     updateTaskMutation.mutate({
       taskId: task.id,
+      title: task.title,
       columnId: selectedColumn.id,
       progress: updatedProgress,
       columnName: selectedColumn.name,

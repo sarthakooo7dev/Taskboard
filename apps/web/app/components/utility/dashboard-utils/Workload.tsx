@@ -20,7 +20,7 @@ const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
   return (
     <div className="p-1  h-full flex flex-col ">
       {/* Header */}
-      <div className=" p-2 flex items-center justify-between gap-2  text-gray-300  ">
+      <div className=" p-2 flex items-center justify-between gap-2 text-gray-300/90 ">
         <div className="flex items-center gap-2">
           <Gauge size={18} />
           <h3 className="text-sm font-medium tracking-wider ">Team Workload</h3>
@@ -58,7 +58,7 @@ const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
                 />
 
                 {/* Name */}
-                <p className="w-[120px] truncate text-[12px] text-gray-300 tracking-wider">
+                <p className="w-[120px] truncate text-[12px] text-gray-300/80 tracking-wider">
                   {member.name}
                 </p>
 

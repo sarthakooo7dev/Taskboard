@@ -135,7 +135,7 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
     // Request succeeded
     onSuccess: () => {
       // Silent background sync
-      queryClient.invalidateQueries({ queryKey: ['dashboard-activity'] })
+      // queryClient.invalidateQueries({ queryKey: ['dashboard-activity'] })
       // console.log(
       //   'onSuccess ____ ' +
       //     JSON.stringify(queryClient.getQueryData(['board-tasks', boardId])),

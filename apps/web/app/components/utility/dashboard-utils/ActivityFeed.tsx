@@ -1,17 +1,14 @@
 'use client'
 import Image from 'next/image'
 import { useQuery } from '@tanstack/react-query'
-import { ActivityIcon, Layers2 } from 'lucide-react'
+import { ActivityIcon, Layers2, RefreshCcw } from 'lucide-react'
 import { ActivityData, TaskStatus } from '@/app/types/general.types'
 import { formatTimeAgo, statusStyles } from '@/app/lib/utils/ui/boardHelpers'
-import { Span } from 'next/dist/trace'
 import { useUserStore } from '@/app/store/user-store'
-import { useDashboardStore } from '@/app/store/dash-store'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
 
 const ActivityFeed = () => {
-  const { sync, setSync } = useDashboardStore()
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ['dashboard-activity'],
     queryFn: async () => {
@@ -24,15 +21,14 @@ const ActivityFeed = () => {
       return res.json()
     },
 
-    staleTime: 60 * 1000,
+    staleTime: 10 * 1000,
   })
 
   useEffect(() => {
-    setSync(isFetching)
     if (isError) {
       toast.error('Failed to load activity. Please try refreshing again.')
     }
-  }, [isError, isFetching])
+  }, [isError])
 
   const activityData: ActivityData[] = data?.data ?? []
 
@@ -65,8 +61,8 @@ const ActivityFeed = () => {
           action: 'moved task',
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
-              <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
-              moved task to{' '}
+              <span className="text-gray-400">{truncateName(modifiedBy)}</span>{' '}
+              <span className="">moved '{activity.metadata.title}' to </span>
               <span
                 className={`tracking-wider text-[11px] ${
                   statusStyles[activity.metadata.toStatus as TaskStatus]?.text
@@ -147,16 +143,22 @@ const ActivityFeed = () => {
   return (
     <div className="flex h-full flex-col min-h-0 ">
       {/* Header */}
-      <div className=" p-2  flex items-center justify-between gap-2  text-gray-300  ">
+      <div className=" p-2  flex items-center justify-between gap-2  text-gray-300/90  ">
         <div className="flex items-center gap-2">
           <ActivityIcon size={18} />
           <h3 className="text-sm font-medium tracking-wider ">Acitivty Feed</h3>
         </div>
-
-        <div className="flex items-center gap-1 text-[10px] tracking-wide text-gray-400">
-          <Layers2 size={10} />
-          Latest activity
-        </div>
+        {isFetching ? (
+          <div className="flex items-center gap-1 text-[11px] tracking-wider text-gray-400">
+            <RefreshCcw className="h-3 w-3 animate-spin" />
+            Syncing
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 text-[10px] tracking-wide text-gray-400">
+            <Layers2 size={10} />
+            Latest activity
+          </div>
+        )}
       </div>
 
       {/* Body */}

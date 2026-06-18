@@ -122,7 +122,7 @@ export type boardMember = {
   id: string
   name: string
   avatar: string
-  role: string
+  role?: string
 }
 
 export type TaskTabsProps = {
@@ -249,18 +249,11 @@ export type DashboardTaskItem = {
     type: 'NOT_STARTED' | 'IN_PROGRESS' | 'BLOCKED' | 'DONE' | 'CUSTOM'
   }
 }
-export type PriorityQueueItem = DashboardTaskItem
-
-export type RecentWorkItem = DashboardTaskItem
 
 export type DashboardData = {
   workspaceOverview: WorkspaceOverviewItem[]
-
   teamWorkload: TeamWorkloadItem[]
-
-  priorityQueue: PriorityQueueItem[]
-
-  recentWork: RecentWorkItem[]
+  userTasks: DashboardTaskItem[]
 }
 
 export type WorkloadProps = {
@@ -271,6 +264,14 @@ export type WorkloadProps = {
 export type WorkspaceProps = {
   workspaceData: WorkspaceOverviewItem[]
   isLoading: boolean
+}
+
+export type MyTasksProps = {
+  myTasksData: DashboardTaskItem[]
+  isLoading: boolean
+}
+export type MyTaskRowProps = {
+  task: DashboardTaskItem
 }
 
 export type ActivityType =

@@ -42,7 +42,9 @@ const BoardCard = ({
       description: description ?? '',
     })
     router.push(
-      `/dashboard/boards/${boardId}?title=${encodeURIComponent(title)}`,
+      `/dashboard/boards/${boardId}?title=${encodeURIComponent(
+        title,
+      )}&taskId=${''}`,
     )
   }
 

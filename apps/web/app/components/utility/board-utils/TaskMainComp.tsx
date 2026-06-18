@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 import {
@@ -40,7 +40,12 @@ const columns = `
 
 const TaskMainComp = () => {
   const params = useParams()
-  const ITEMS_PER_PAGE: number = 8
+  const searchParams = useSearchParams()
+  const taskIdFromRoute = searchParams.get('taskId')
+  const router = useRouter()
+  const paramsUrl = new URLSearchParams(searchParams.toString())
+
+  const ITEMS_PER_PAGE: number = 6
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const { data, isLoading } = useQuery({
@@ -124,6 +129,23 @@ const TaskMainComp = () => {
       }
     }
   }, [tasks])
+
+  useEffect(() => {
+    if (!taskIdFromRoute) return
+    if (!tasks.length) return
+
+    const task = tasks.find((t: TaskItem) => t.id === taskIdFromRoute)
+
+    if (!task) return
+
+    setSelectedTask(task)
+    setOpenTask(true)
+    paramsUrl.set('taskId', '')
+
+    router.replace(`?${paramsUrl.toString()}`, {
+      scroll: false,
+    })
+  }, [taskIdFromRoute, tasks])
 
   const blockedCount: number = tasks.filter(
     (taskVal: TaskItem) => taskVal.column.type === 'BLOCKED',

@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { useEffect } from 'react'
 import {
   DashboardData,
+  DashboardTaskItem,
   TeamWorkloadItem,
   WorkspaceOverviewItem,
 } from '../types/general.types'
@@ -11,6 +12,8 @@ import Workload from '../components/utility/dashboard-utils/Workload'
 import WorkspaceOverview from '../components/utility/dashboard-utils/WorkspaceOverview'
 import ActivityFeed from '../components/utility/dashboard-utils/ActivityFeed'
 import { useDashboardStore } from '../store/dash-store'
+import RecentTasks from '../components/utility/dashboard-utils/RecentTasks'
+import MyTasks from '../components/utility/dashboard-utils/MyTasks'
 
 export default function Page() {
   const { data, isLoading, isError } = useQuery({
@@ -23,7 +26,7 @@ export default function Page() {
       }
       return res.json()
     },
-    staleTime: 60 * 1000,
+    staleTime: 10 * 1000,
     // refetchOnMount: false, //
   })
 
@@ -31,6 +34,7 @@ export default function Page() {
   const workloadData: TeamWorkloadItem[] = dashboardData?.teamWorkload
   const workspaceData: WorkspaceOverviewItem[] =
     dashboardData?.workspaceOverview
+  const myTasksData: DashboardTaskItem[] = dashboardData?.userTasks
 
   useEffect(() => {
     if (isError) {
@@ -44,11 +48,13 @@ export default function Page() {
         {/* #Main_grid */}
         <div className="grid grid-cols-[1fr_0.5fr] gap-3 p-2 h-full">
           {/* #left_elements */}
-          <div className=" grid grid-rows-[1fr_0.7fr] gap-3">
-            <div className="border border-lg_grey">priority queue</div>
+          <div className=" grid grid-rows-[0.7fr_1fr] gap-2 min-h-0">
             <div className=" grid grid-cols-2 gap-3">
               {/* #recent_work */}
-              <div className=" bg-lg_grey/30 rounded-lg">recent work</div>
+              <div className=" bg-lg_grey/30 rounded-lg">
+                <RecentTasks />
+              </div>
+
               {/* #Team_workload */}
               <div className=" bg-lg_grey/30 rounded-lg">
                 <Workload
@@ -57,10 +63,14 @@ export default function Page() {
                 />
               </div>
             </div>
+            {/* #My_tasks */}
+            <div className=" bg-lg_grey/30 rounded-lg min-h-0">
+              <MyTasks myTasksData={myTasksData ?? []} isLoading={isLoading} />
+            </div>
           </div>
 
           {/* #right_elements */}
-          <div className=" grid grid-rows-[0.7fr_1fr] gap-2">
+          <div className=" grid grid-rows-[0.7fr_1fr] gap-2 ">
             {/* #Workspace_overview */}
             <div className="bg-lg_grey/30 rounded-lg">
               <WorkspaceOverview

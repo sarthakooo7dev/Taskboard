@@ -137,6 +137,7 @@ export async function PATCH(
         type: ActivityType.TASK_MOVED,
         entityId: taskId,
         metadata: {
+          title,
           toStatus: columnExists!.type,
           modifiedBy: checkMembership.user.name,
         },

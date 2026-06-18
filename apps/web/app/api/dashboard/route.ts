@@ -1,5 +1,5 @@
 import { checkAuthorization } from '@/app/lib/validators/user.validator'
-import { prisma } from '@repo/db'
+import { ColumnType, prisma } from '@repo/db'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -7,7 +7,6 @@ export async function GET() {
     const session = await checkAuthorization()
     //@ts-ignore
     const currentUserId = session.user.id
-
     //# Get all boards user can access
     const boards = await prisma.board.findMany({
       where: {
@@ -41,7 +40,6 @@ export async function GET() {
 
     const boardIds = boards.map((board) => board.id)
 
-    // # Fetch dashboard datasets in parallel
     const activeTasks = await prisma.task.findMany({
       where: {
         boardId: {
@@ -173,41 +171,15 @@ export async function GET() {
       (a, b) => b.workloadMinutes - a.workloadMinutes,
     )
 
-    // ==========================
-    // Priority Queue
-    // ==========================
-
-    const priorityOrder = {
-      HIGH: 3,
-      MEDIUM: 2,
-      LOW: 1,
-    }
-
-    const priorityQueue = [...activeTasks]
-      .sort((a, b) => {
-        if (a.column.type === 'BLOCKED' && b.column.type !== 'BLOCKED')
-          return -1
-
-        if (b.column.type === 'BLOCKED' && a.column.type !== 'BLOCKED') return 1
-
-        return priorityOrder[b.Priority] - priorityOrder[a.Priority]
-      })
-      .slice(0, 5)
-
-    // ==========================
-    // Recent Work
-    // ==========================
-
-    const recentWork = [...activeTasks]
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-      .slice(0, 5)
+    const userTasks = activeTasks.filter(
+      (val) => val.assignedTo?.id === currentUserId,
+    )
 
     return NextResponse.json({
       data: {
         workspaceOverview,
         teamWorkload,
-        priorityQueue,
-        recentWork,
+        userTasks,
       },
     })
   } catch (err) {
