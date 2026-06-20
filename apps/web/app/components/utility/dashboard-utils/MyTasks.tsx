@@ -11,12 +11,14 @@ import {
   Sprout,
 } from 'lucide-react'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import MyTasksRow from './myTasksRow'
 import MyTasksSkeleton from '../loader-components/MyTasksSkeleton'
 
 const MyTasks = ({ myTasksData, isLoading }: MyTasksProps) => {
+  const [defaultTab, setDefaultTab] = useState('')
+
   const tasksByStatus = {
     NOT_STARTED: myTasksData.filter(
       (task) => task.column.type === 'NOT_STARTED',
@@ -26,12 +28,19 @@ const MyTasks = ({ myTasksData, isLoading }: MyTasksProps) => {
     ),
     BLOCKED: myTasksData.filter((task) => task.column.type === 'BLOCKED'),
   }
-  const defaultTab =
-    tasksByStatus.IN_PROGRESS.length > 0
-      ? 'IN_PROGRESS'
-      : tasksByStatus.BLOCKED.length > 0
-      ? 'BLOCKED'
-      : 'NOT_STARTED'
+
+  useEffect(() => {
+    if (myTasksData.length === 0) return
+    const tab =
+      tasksByStatus.IN_PROGRESS.length > 0
+        ? 'IN_PROGRESS'
+        : tasksByStatus.BLOCKED.length > 0
+        ? 'BLOCKED'
+        : 'NOT_STARTED'
+
+    setDefaultTab(tab)
+  }, [myTasksData])
+
   return (
     <div className="h-full flex flex-col p-1 min-h-0">
       {/* Header */}
@@ -49,7 +58,8 @@ const MyTasks = ({ myTasksData, isLoading }: MyTasksProps) => {
 
       <div className="flex-1 min-h-0 px-2">
         <Tabs
-          defaultValue={defaultTab}
+          value={defaultTab}
+          onValueChange={setDefaultTab}
           className="flex h-full min-h-0 flex-col  "
         >
           <TabsList className="grid grid-cols-3 w-[65%] bg-lg_grey/30  ">
