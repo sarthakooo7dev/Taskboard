@@ -34,7 +34,7 @@ const QuickInsights = ({ quickInsights, isLoading }: QuickInsightsProps) => {
     {
       radius: 39,
       value: notStartedPct,
-      color: 'rgba(234, 179, 8, 0.9)',
+      color: '#fbbf24',
       transform: 'rotate(-25 65 65)',
     },
     {

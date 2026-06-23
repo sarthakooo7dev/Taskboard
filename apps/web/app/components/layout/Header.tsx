@@ -41,7 +41,7 @@ const Header = () => {
       <div className=" flex justify-end  items-center p-1 w-[30%] gap-3 ">
         {isWorkspacePage && <CreateBoardBtn />}
 
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
 
         <Notify />
       </div>
