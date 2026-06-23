@@ -1,7 +1,7 @@
 const MyTasksSkeleton = () => {
   return (
     <div>
-      {Array.from({ length: 2 }).map((_, index) => (
+      {Array.from({ length: 3 }).map((_, index) => (
         <div
           key={index}
           className="flex items-center gap-4 border-b border-white/[0.04] px-5 py-3"

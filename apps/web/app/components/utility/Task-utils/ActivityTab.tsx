@@ -1,5 +1,12 @@
-import { formatCommentTime } from '@/app/lib/utils/ui/boardHelpers'
-import { Activity, ActivityTabProps } from '@/app/types/general.types'
+import {
+  formatCommentTime,
+  statusStyles,
+} from '@/app/lib/utils/ui/boardHelpers'
+import {
+  Activity,
+  ActivityTabProps,
+  TaskStatus,
+} from '@/app/types/general.types'
 import { useQuery } from '@tanstack/react-query'
 import {
   CheckCircle2,
@@ -21,7 +28,9 @@ const getActivityContent = (activity: Activity) => {
       return {
         icon: <MoveRight size={11} className="text-blue-400" />,
         bg_style: 'bg-blue-500/20',
-        text: `${actor} moved task to ${activity.metadata.toStatus}`,
+        text: `${actor} moved task to ${
+          statusStyles[activity.metadata.toStatus as TaskStatus]?.label
+        }`,
       }
 
     case 'TASK_ASSIGNED':
