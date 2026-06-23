@@ -91,6 +91,10 @@ export async function GET() {
     // ==========================
     // Workspace Overview
     // ==========================
+    let workspaceDoneTasks = 0
+    let workspaceInProgressTasks = 0
+    let workspaceBlockedTasks = 0
+    let workspaceNotStartedTasks = 0
 
     const workspaceOverview = boards.map((board) => {
       let doneTasks = 0
@@ -105,14 +109,21 @@ export async function GET() {
         switch (task.column.type) {
           case 'DONE':
             doneTasks++
+            workspaceDoneTasks++
             break
 
           case 'IN_PROGRESS':
             inProgressTasks++
+            workspaceInProgressTasks++
             break
 
           case 'BLOCKED':
             blockedTasks++
+            workspaceBlockedTasks++
+            break
+
+          case 'NOT_STARTED':
+            workspaceNotStartedTasks++
             break
         }
       }
@@ -171,15 +182,29 @@ export async function GET() {
       (a, b) => b.workloadMinutes - a.workloadMinutes,
     )
 
+    // ==========================
+    // My Tasks
+    // ==========================
     const userTasks = activeTasks.filter(
       (val) => val.assignedTo?.id === currentUserId,
     )
+
+    // ==========================
+    // Quick insights
+    // ==========================
+    const quickInsights = {
+      DoneTasks: workspaceDoneTasks,
+      InProgressTasks: workspaceInProgressTasks,
+      BlockedTasks: workspaceBlockedTasks,
+      NotStartedTasks: workspaceNotStartedTasks,
+    }
 
     return NextResponse.json({
       data: {
         workspaceOverview,
         teamWorkload,
         userTasks,
+        quickInsights,
       },
     })
   } catch (err) {

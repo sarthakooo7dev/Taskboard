@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import {
   DashboardData,
   DashboardTaskItem,
+  quickInsightsData,
   TeamWorkloadItem,
   WorkspaceOverviewItem,
 } from '../types/general.types'
@@ -12,8 +13,10 @@ import Workload from '../components/utility/dashboard-utils/Workload'
 import WorkspaceOverview from '../components/utility/dashboard-utils/WorkspaceOverview'
 import ActivityFeed from '../components/utility/dashboard-utils/ActivityFeed'
 import { useDashboardStore } from '../store/dash-store'
-import RecentTasks from '../components/utility/dashboard-utils/RecentTasks'
+import RecentTasks from '../components/utility/dashboard-utils/QuickInsights'
 import MyTasks from '../components/utility/dashboard-utils/MyTasks'
+import FocusMetrics from '../components/utility/dashboard-utils/QuickInsights'
+import QuickInsights from '../components/utility/dashboard-utils/QuickInsights'
 
 export default function Page() {
   const { data, isLoading, isError } = useQuery({
@@ -35,6 +38,7 @@ export default function Page() {
   const workspaceData: WorkspaceOverviewItem[] =
     dashboardData?.workspaceOverview
   const myTasksData: DashboardTaskItem[] = dashboardData?.userTasks
+  const quickInsights: quickInsightsData = dashboardData?.quickInsights
 
   useEffect(() => {
     if (isError) {
@@ -52,7 +56,10 @@ export default function Page() {
             <div className=" grid grid-cols-2 gap-3">
               {/* #recent_work */}
               <div className=" bg-lg_grey/30 rounded-lg">
-                <RecentTasks />
+                <QuickInsights
+                  quickInsights={quickInsights}
+                  isLoading={isLoading}
+                />
               </div>
 
               {/* #Team_workload */}

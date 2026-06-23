@@ -322,3 +322,19 @@ export const formatCommentTime = (timestamp: string) => {
     })
   )
 }
+
+export const momentumInsight = {
+  positive: {
+    title: 'Strong Momentum',
+    description: 'Most active work is progressing as expected.',
+    iconColor: 'text-purple-300',
+    bgColor: 'bg-purple-500/40',
+  },
+
+  negative: {
+    title: 'Momentum Slowing',
+    description: 'More work is waiting than actively progressing.',
+    iconColor: 'text-amber-300',
+    bgColor: 'bg-amber-500/15',
+  },
+}

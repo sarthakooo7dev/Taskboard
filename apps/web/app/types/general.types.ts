@@ -228,7 +228,7 @@ export type DashboardTaskItem = {
   id: string
   title: string
   estimate: number
-  Priority: 'LOW' | 'MEDIUM' | 'HIGH'
+  Priority: TaskPriority
 
   updatedAt: string
 
@@ -246,14 +246,22 @@ export type DashboardTaskItem = {
   }
 
   column: {
-    type: 'NOT_STARTED' | 'IN_PROGRESS' | 'BLOCKED' | 'DONE' | 'CUSTOM'
+    type: TaskStatus
   }
+}
+
+export type quickInsightsData = {
+  DoneTasks: number
+  InProgressTasks: number
+  BlockedTasks: number
+  NotStartedTasks: number
 }
 
 export type DashboardData = {
   workspaceOverview: WorkspaceOverviewItem[]
   teamWorkload: TeamWorkloadItem[]
   userTasks: DashboardTaskItem[]
+  quickInsights: quickInsightsData
 }
 
 export type WorkloadProps = {
@@ -272,6 +280,11 @@ export type MyTasksProps = {
 }
 export type MyTaskRowProps = {
   task: DashboardTaskItem
+}
+
+export type QuickInsightsProps = {
+  quickInsights: quickInsightsData
+  isLoading: boolean
 }
 
 export type ActivityType =

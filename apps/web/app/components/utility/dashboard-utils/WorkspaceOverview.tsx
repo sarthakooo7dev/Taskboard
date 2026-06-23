@@ -32,7 +32,7 @@ const WorkspaceOverview = ({ workspaceData, isLoading }: WorkspaceProps) => {
       {/* Header */}
       <div className=" p-2 flex items-center justify-between gap-2 text-gray-300/90 ">
         <div className="flex items-center gap-2">
-          <Folder size={18} />
+          <Folder size={18} className="text-purple-400" />
           <h3 className="text-sm font-medium tracking-wider ">
             Workspace Overview
           </h3>
