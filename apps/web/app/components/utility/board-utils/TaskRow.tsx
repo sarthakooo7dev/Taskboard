@@ -119,12 +119,12 @@ const TaskRow = ({
 
   return (
     <div
-      className="grid min-h-[64px] border-b border-white/[0.04] transition-colors duration-200 hover:bg-lg_grey/15"
+      className="grid min-h-[67px] border-b border-white/[0.04] transition-colors duration-200 hover:bg-lg_grey/15"
       style={{ gridTemplateColumns: columns }}
     >
       {/* TASK */}
       <div
-        className="group flex min-w-0 cursor-pointer flex-col justify-center px-4 py-2 "
+        className="group flex min-w-0 cursor-pointer flex-col justify-center px-4 py-2  "
         onClick={() => handleTask(false)}
       >
         <h3 className="truncate text-sm font-medium tracking-wider text-gray-300 group-hover:text-gray-100">

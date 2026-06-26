@@ -8,6 +8,15 @@ export const userCredSchema = z.object({
   }),
 })
 
+export const updateUserSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    email: z.email().max(50).optional(),
+    role: z.string().min(8).max(20).optional(),
+    avatar: z.string().optional(),
+  }),
+})
+
 export const createBoardSchema = z.object({
   body: z.object({
     name: z

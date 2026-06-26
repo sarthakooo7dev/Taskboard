@@ -5,12 +5,45 @@ import React, { useEffect, useRef, useState } from 'react'
 import { ROUTES } from '../../../lib/ui.routes'
 import { useUserStore } from '../../../store/user-store'
 import UserCardSkeleton from '../loader-components/UserCardSkeleton'
+import AddRoleModal from './AddRoleModal'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { userAgent } from 'next/server'
 
 const UserCard = () => {
   const [open, setOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  const User = useUserStore((s) => s.user)
+  const { user, setUser } = useUserStore()
+
+  const mutation = useMutation({
+    mutationFn: async (role: string) => {
+      const res = await fetch('/api/user/me', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ role }),
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to update role')
+      }
+
+      return res.json()
+    },
+
+    onSuccess: (data) => {
+      console.log('onsucess----' + data)
+      setUser(data?.data)
+      toast.success('Role updated !')
+    },
+
+    onError: () => {
+      toast.error('Failed to update role.')
+    },
+  })
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -23,11 +56,12 @@ const UserCard = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleRoleEdit = () => {
-    // router.push(ROUTES.settings)
+  const handleSubmit = (role: string) => {
+    mutation.mutate(role)
+    console.log(' role ------------- ' + role)
   }
 
-  if (!User) {
+  if (!user) {
     return <UserCardSkeleton />
   }
 
@@ -62,21 +96,21 @@ const UserCard = () => {
       {/* 👤 User Card */}
       <div className="flex items-center justify-between cursor-pointer p-[6px] border-2 border-dk_border rounded-md">
         <div className="bg-purple-950 rounded-md">
-          <img className="w-9 h-9 rounded-md" src={User?.avatar} alt="image" />
+          <img className="w-9 h-9 rounded-md" src={user?.avatar} alt="image" />
         </div>
 
         <div className="flex-1 ml-2">
           <p className="text-sm w-[16ch] overflow-hidden whitespace-nowrap opacity-85">
-            {User?.name}
+            {user?.name}
           </p>
-          {User?.role ? (
+          {user?.role ? (
             <p className="text-xs w-[16ch] overflow-hidden whitespace-nowrap text-gray-400">
-              {User?.role}
+              {user?.role}
             </p>
           ) : (
             <p
               className="flex items-center w-[11ch] gap-1 text-xs text-gray-400 cursor-pointer "
-              onClick={handleRoleEdit}
+              onClick={() => setOpenModal(true)}
             >
               <Pen size={12} /> Add role
             </p>
@@ -90,6 +124,12 @@ const UserCard = () => {
           <ChevronsUpDown size={16} />
         </div>
       </div>
+
+      <AddRoleModal
+        open={openModal}
+        onOpenChange={setOpenModal}
+        onSubmit={handleSubmit}
+      />
     </div>
   )
 }

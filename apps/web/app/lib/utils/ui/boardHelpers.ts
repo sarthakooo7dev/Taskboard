@@ -10,6 +10,15 @@ import {
   Anchor,
   EggFried,
   Compass,
+  Megaphone,
+  ShieldCheck,
+  BarChart3,
+  FileText,
+  InfinityIcon,
+  GamepadDirectional,
+  Code2,
+  PenTool,
+  Briefcase,
 } from 'lucide-react'
 
 const ICONS = [
@@ -323,18 +332,59 @@ export const formatCommentTime = (timestamp: string) => {
   )
 }
 
-export const momentumInsight = {
-  positive: {
-    title: 'Strong Momentum',
-    description: 'Most active work is progressing as expected.',
-    iconColor: 'text-purple-300',
-    bgColor: 'bg-purple-500/40',
+export const suggestedRoles = [
+  {
+    id: 'Developer',
+    label: 'Developer',
+    icon: Code2,
+    color: 'text-sky-400',
   },
-
-  negative: {
-    title: 'Momentum Slowing',
-    description: 'More work is waiting than actively progressing.',
-    iconColor: 'text-amber-300',
-    bgColor: 'bg-amber-500/15',
+  {
+    id: 'Designer',
+    label: 'Designer',
+    icon: PenTool,
+    color: 'text-pink-400',
   },
-}
+  {
+    id: 'Tester',
+    label: 'Tester',
+    icon: ShieldCheck,
+    color: 'text-orange-400',
+  },
+  {
+    id: 'Product',
+    label: 'Product',
+    icon: Briefcase,
+    color: 'text-violet-400',
+  },
+  {
+    id: 'Manager',
+    label: 'Manager',
+    icon: GamepadDirectional,
+    color: 'text-indigo-400',
+  },
+  {
+    id: 'DevOps',
+    label: 'DevOps',
+    icon: InfinityIcon,
+    color: 'text-cyan-400',
+  },
+  {
+    id: 'Analyst',
+    label: 'Analyst',
+    icon: BarChart3,
+    color: 'text-emerald-400',
+  },
+  {
+    id: 'Marketing',
+    label: 'Marketing',
+    icon: Megaphone,
+    color: 'text-yellow-400',
+  },
+  {
+    id: 'Writer',
+    label: 'Writer',
+    icon: FileText,
+    color: 'text-rose-400',
+  },
+]
