@@ -4,19 +4,24 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "board": "tsx src/board.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@bull-board/api": "^8.0.1",
+    "@bull-board/express": "^8.0.1",
     "bullmq": "^5.73.0",
     "dotenv": "^17.4.0",
+    "express": "^5.2.1",
     "ioredis": "^5.10.1",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.6",
     "typescript": "^6.0.2"
   }
 }

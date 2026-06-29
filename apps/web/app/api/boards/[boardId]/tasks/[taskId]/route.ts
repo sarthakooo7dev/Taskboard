@@ -74,6 +74,19 @@ export async function PATCH(
 
     const existingTask = await prisma.task.findUnique({
       where: { id: taskId },
+      include: {
+        column: {
+          select: {
+            name: true,
+            type: true,
+          },
+        },
+        board: {
+          select: {
+            name: true,
+          },
+        },
+      },
     })
     if (!existingTask) {
       return NextResponse.json(
@@ -180,9 +193,6 @@ export async function PATCH(
     // ## -- Dispatch notification events...
 
     let receiverIds: string[] = []
-    if (existingTask.createdById != currentUserID) {
-      receiverIds.push(existingTask.createdById)
-    }
     if (
       existingTask.assignedToId &&
       existingTask.assignedToId != currentUserID
@@ -199,7 +209,14 @@ export async function PATCH(
         type: EventType.TASK_EDIT_GENERIC,
         boardId,
         creator: checkMembership.user.name,
-        info: { isStatusChanged, isTaskAssigned, isMetadataUpdated },
+        info: {
+          isStatusChanged,
+          isTaskAssigned,
+          isMetadataUpdated,
+          title: updatedTask.title,
+          oldTitle: existingTask.title,
+          boardTitle: existingTask.board.name,
+        },
         taskId,
         senderId: currentUserID,
         receiverIds,
@@ -211,8 +228,10 @@ export async function PATCH(
         creator: checkMembership.user.name,
         info: {
           isStatusChanged,
-          oldStatusId: existingTask.columnId,
-          newStatus: columnExists?.type,
+          title: updatedTask.title,
+          oldStatus: existingTask.column.name,
+          newStatus: columnExists?.name,
+          boardTitle: existingTask.board.name,
         },
         taskId,
         senderId: currentUserID,
@@ -229,6 +248,7 @@ export async function PATCH(
           oldAssignee: existingTask.assignedToId,
           newAssignee: assignedToId,
           newAssigneName: assigneeMembership.user.name,
+          boardTitle: existingTask.board.name,
         },
         taskId,
         senderId: currentUserID,
@@ -245,6 +265,7 @@ export async function PATCH(
           newTitle: updatedTask.title,
           oldDesc: existingTask.description,
           newDesc: updatedTask.description,
+          boardTitle: existingTask.board.name,
         },
         taskId,
         senderId: currentUserID,

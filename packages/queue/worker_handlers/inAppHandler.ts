@@ -27,11 +27,14 @@ export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
 
   for (const userId of receiverIds) {
     // CRITICAL → must succeed (no try/catch)
+
+    const metadataObj = { ...info, creator, mentionedIds, boardId }
     const notification = await createNotification({
       userId,
       actorId: senderId,
       type: NotifyTypes.TASK_COMMENT_CREATED,
       entityId: taskId,
+      metaData: metadataObj,
     })
     //  NON-CRITICAL → safe to fail
     try {
@@ -59,16 +62,19 @@ export async function handleTaskUpdate(jobData: any) {
 
   for (const userId of receiverIds) {
     // CRITICAL → must succeed (no try/catch)
+
+    const metadataObj = { ...info, creator, boardId }
+
     const notification = await createNotification({
       userId,
       actorId: senderId,
       type: type,
-      metaData: info,
+      metaData: metadataObj,
       entityId: taskId,
     })
     //  NON-CRITICAL → safe to fail
     try {
-      const notifyObj_ws = { ...notification, creator, info }
+      const notifyObj_ws = { ...notification }
       await publishNotification(userId, notifyObj_ws)
     } catch (err) {
       console.error('❌ WS publish failed for user:', userId, err)

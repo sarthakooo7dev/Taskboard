@@ -10,7 +10,7 @@ export const notificationQueue = new Queue('notification', {
       type: 'exponential',
       delay: 1000,
     },
-    removeOnComplete: true,
+    removeOnComplete: false,
     removeOnFail: false,
   },
 })
@@ -24,7 +24,7 @@ export const pushQueue = new Queue('push', {
       type: 'exponential',
       delay: 1000,
     },
-    removeOnComplete: true,
+    removeOnComplete: false,
     removeOnFail: false,
   },
 })
