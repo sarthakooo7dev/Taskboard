@@ -137,3 +137,70 @@ width:81vw
     width: 100%;
   }
 }
+
+
+@keyframes bell-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  10% {
+    transform: rotate(16deg);
+  }
+
+  20% {
+    transform: rotate(-14deg);
+  }
+
+  30% {
+    transform: rotate(12deg);
+  }
+
+  40% {
+    transform: rotate(-10deg);
+  }
+
+  50% {
+    transform: rotate(8deg);
+  }
+
+  60% {
+    transform: rotate(-6deg);
+  }
+
+  70% {
+    transform: rotate(4deg);
+  }
+
+  80% {
+    transform: rotate(-2deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-bell {
+  animation: bell-ring 0.8s ease-in-out;
+  transform-origin: top center;
+}
+
+@keyframes badge-pop {
+  0% {
+    transform: scale(.4);
+    opacity: .5;
+  }
+
+  60% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge-pop {
+  animation: badge-pop .35s ease-out;
+}

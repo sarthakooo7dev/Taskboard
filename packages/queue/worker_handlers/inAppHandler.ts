@@ -38,7 +38,7 @@ export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
     })
     //  NON-CRITICAL → safe to fail
     try {
-      const notifyObj_ws = { ...notification, creator, info, mentionedIds }
+      const notifyObj_ws = { ...notification }
       await publishNotification(userId, notifyObj_ws)
     } catch (err) {
       console.error('❌ WS publish failed for user:', userId, err)

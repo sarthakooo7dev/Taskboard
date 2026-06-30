@@ -113,7 +113,17 @@ export async function POST(
         id: taskId,
         boardId,
       },
-      select: { id: true, title: true, assignedToId: true, createdById: true },
+      select: {
+        id: true,
+        title: true,
+        assignedToId: true,
+        createdById: true,
+        board: {
+          select: {
+            name: true,
+          },
+        },
+      },
     })
 
     if (!task) {
@@ -181,7 +191,7 @@ export async function POST(
       type: EventType.TASK_COMMENT_CREATED,
       boardId,
       creator: comment.user.name,
-      info: { title: task.title },
+      info: { title: task.title, boardTitle: task.board.name },
       taskId: task.id,
       senderId: currentUserID,
       mentionedIds: mentionedUserIds,
