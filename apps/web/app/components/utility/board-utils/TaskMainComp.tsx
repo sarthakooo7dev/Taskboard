@@ -26,6 +26,8 @@ import TaskDetailsSheet from './TaskDetailsSheet'
 import TaskToolbar from './TaskTollbar'
 import { useUserStore } from '@/app/store/user-store'
 import InfoToolbar from './InfoToolbar'
+import { socket } from '@/app/lib/socket'
+import { updateBoardTaskCache } from '@/app/lib/cacheHelpers/updateBoardTaskCache'
 
 const columns = `
     minmax(320px, 2.4fr)
@@ -150,8 +152,46 @@ const TaskMainComp = () => {
   const blockedCount: number = tasks.filter(
     (taskVal: TaskItem) => taskVal.column.type === 'BLOCKED',
   ).length
-  const queryClient = useQueryClient()
 
+  useEffect(() => {
+    if (!User?.id || !params.boardId) return
+
+    socket.emit('JOIN_BOARD', {
+      boardId: params.boardId,
+      userId: User.id,
+    })
+
+    socket.on('task-updated', (data) => {
+      console.log('task-update', data)
+
+      console.log('tas-updarte', data.senderId, User.id)
+      if (data.senderId != User.id) {
+        const updateTaskCache = {
+          taskId: data.taskId,
+          title: data.title,
+          description: data.description,
+          columnId: data.columnId,
+          progress: data.progress,
+          assignedTo: data.assignedTo,
+          columnName: data.column.name,
+          columnType: data.column.type,
+          estimate: data.estimate,
+          Priority: data.Priority,
+        }
+        updateBoardTaskCache(queryClient, data.boardId, updateTaskCache)
+        updateTaskListRef.current = true
+        console.log('i am running')
+        console.log(queryClient.getQueryData(['board-tasks', data.boardId]))
+      }
+    })
+
+    return () => {
+      socket.emit('LEAVE_BOARD')
+      socket.off('task-updated')
+    }
+  }, [User?.id, params.boardId])
+
+  const queryClient = useQueryClient()
   const deleteTaskMutation = useMutation({
     mutationFn: async (taskId: string) => {
       const response = await fetch(

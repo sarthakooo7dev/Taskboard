@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { boardMember, TaskItem, TaskStatus } from '../types/general.types'
 import { BoardMember, PriorityType } from '@repo/db'
+import { updateBoardTaskCache } from '../lib/cacheHelpers/updateBoardTaskCache'
 
 type UpdateTaskParams = {
   taskId: string
@@ -70,51 +71,7 @@ export const useUpdateTask = ({ boardId }: UseUpdateTaskProps) => {
       const previousTasks = queryClient.getQueryData(['board-tasks', boardId])
 
       // Immediately update cache
-      queryClient.setQueryData(['board-tasks', boardId], (oldData: any) => {
-        // Safety check
-        if (!oldData) return oldData
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            tasks: oldData.data.tasks.map((task: any) => {
-              if (task.id === updatedTask.taskId) {
-                return {
-                  ...task,
-                  ...(updatedTask.title !== undefined && {
-                    title: updatedTask.title,
-                  }),
-                  ...(updatedTask.description !== undefined && {
-                    description: updatedTask.description,
-                  }),
-                  ...(updatedTask.Priority !== undefined && {
-                    Priority: updatedTask.Priority,
-                  }),
-                  ...(updatedTask.columnId !== undefined && {
-                    columnId: updatedTask.columnId,
-                    column: {
-                      ...task.column,
-                      id: updatedTask.columnId,
-                      name: updatedTask.columnName,
-                      type: updatedTask.columnType,
-                    },
-                  }),
-                  ...(updatedTask.estimate !== undefined && {
-                    estimate: updatedTask.estimate,
-                  }),
-                  ...(updatedTask.progress !== undefined && {
-                    progress: updatedTask.progress,
-                  }),
-                  ...(updatedTask.assignedTo !== undefined && {
-                    assignedTo: updatedTask.assignedTo,
-                  }),
-                }
-              }
-              return task
-            }),
-          },
-        }
-      })
+      updateBoardTaskCache(queryClient, boardId, updatedTask)
       return {
         previousTasks,
       }

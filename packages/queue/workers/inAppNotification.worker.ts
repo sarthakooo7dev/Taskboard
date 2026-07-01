@@ -6,6 +6,7 @@ import { NotifyTypes } from '../../types'
 import {
   handleCommentCreation,
   handleTaskUpdate,
+  handleUpdatEvent,
 } from '../worker_handlers/inAppHandler'
 
 // to make .env load explicitly for worker
@@ -30,6 +31,9 @@ export const notificationWorker = new Worker(
 
       case NotifyTypes.TASK_EDIT_METADATA:
         return handleTaskUpdate(job.data)
+
+      case NotifyTypes.TASK_UPDATE_EVENT:
+        return handleUpdatEvent(job.data)
 
       default:
         throw new Error(`Unhandled type: ${job.data.type}`)

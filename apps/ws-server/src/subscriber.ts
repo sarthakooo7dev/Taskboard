@@ -9,14 +9,24 @@ const sub = new Redis({
 export function startNotificationSubscriber() {
   // listen to all user channels
   sub.psubscribe('user:*')
+  sub.psubscribe('board:*')
 
   sub.on('pmessage', (_, channel, message) => {
-    const userId = channel.split(':')[1]
     const data = JSON.parse(message)
+    if (channel.startsWith('user:')) {
+      const userId = channel.split(':')[1]
+      console.log('📩 Redis → WS:userId', userId)
+      io.to(userId).emit('notification', data)
+      return
+    }
 
-    console.log('📩 Redis → WS:', userId)
-
-    // send to that user
-    io.to(userId).emit('notification', data)
+    if (channel.startsWith('board:')) {
+      const boardId = channel.split(':')[1]
+      console.log('📩 Redis → WS: boardId', boardId)
+      io.to(boardId).emit('task-updated', data)
+      return
+    }
   })
 }
+
+//

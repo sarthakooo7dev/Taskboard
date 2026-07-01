@@ -280,7 +280,7 @@ const Notify = () => {
                   ) : (
                     unreadNotifyData.map((notify) => {
                       const item = formatNotification(notify, user?.id ?? '')
-                      const Icon = item.icon
+                      const Icon = item?.icon
                       return (
                         <div
                           key={notify.id}

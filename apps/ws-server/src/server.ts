@@ -1,5 +1,5 @@
 import http from 'http'
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 import {
   getBoardPresence,
   joinBoard,
@@ -31,6 +31,7 @@ io.on('connection', (socket) => {
 
     const users = getBoardPresence(boardId)
     io.to(boardId).emit('PRESENCE_UPDATE', users)
+    console.log(users)
   })
 
   socket.on('REGISTER', ({ userId }) => {
@@ -38,16 +39,26 @@ io.on('connection', (socket) => {
     console.log('User joined personal room:', userId)
   })
 
-  socket.on('disconnect', () => {
-    const info = leaveBoard(socket.id)
-    if (info?.boardId) {
-      removeUsersToredis(info.boardId, info.userId)
-      const users = getBoardPresence(info.boardId)
-      io.to(info.boardId).emit('PRESENCE_UPDATE', users)
-    }
-    console.log('user disconnected:', socket.id)
+  socket.on('LEAVE_BOARD', async () => {
+    await cleanupBoard(socket)
+  })
+
+  socket.on('disconnect', async () => {
+    await cleanupBoard(socket)
   })
 })
+
+const cleanupBoard = async (socket: Socket) => {
+  const info = leaveBoard(socket.id)
+  if (info?.boardId) {
+    socket.leave(info.boardId)
+    removeUsersToredis(info.boardId, info.userId)
+    const users = getBoardPresence(info.boardId)
+    io.to(info.boardId).emit('PRESENCE_UPDATE', users)
+    console.log(`current users on ${info.boardId}  :`, users)
+  }
+  console.log('user disconnected:', socket.id)
+}
 
 // adds user to redis (presence gets available to workers through it)
 async function addUsersToredis(boardId: string, userId: string) {

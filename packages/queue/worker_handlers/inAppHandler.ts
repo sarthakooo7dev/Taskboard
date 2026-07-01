@@ -8,7 +8,11 @@ import {
   TaskCommentEvent_0,
   TaskEditEvent_0,
 } from '../../types'
-import { publishNotification, usersViewingBoard } from '../src/connection'
+import {
+  publishBoardEvent,
+  publishNotification,
+  usersViewingBoard,
+} from '../src/connection'
 
 export async function handleCommentCreation(jobData: TaskCommentEvent_0) {
   const {
@@ -79,5 +83,26 @@ export async function handleTaskUpdate(jobData: any) {
     } catch (err) {
       console.error('❌ WS publish failed for user:', userId, err)
     }
+  }
+}
+
+export async function handleUpdatEvent(jobData: any) {
+  const {
+    receiverIds,
+    senderId,
+    taskId,
+    type,
+    boardId,
+    creator,
+    info,
+  } = jobData
+
+  //  NON-CRITICAL → safe to fail
+  try {
+    const notifyObj_ws = { ...info, creator, senderId, taskId }
+
+    await publishBoardEvent(boardId, notifyObj_ws)
+  } catch (err) {
+    console.error('❌ WS publish failed for user:', err)
   }
 }

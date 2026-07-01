@@ -4,6 +4,7 @@ export enum NotifyTypes {
   TASK_EDIT_STATUS = 'TASK_EDIT_STATUS',
   TASK_EDIT_METADATA = 'TASK_EDIT_METADATA',
   TASK_EDIT_GENERIC = 'TASK_EDIT_GENERIC',
+  TASK_UPDATE_EVENT = 'TASK_UPDATE_EVENT',
 }
 
 export type CreateNotificationInput = {

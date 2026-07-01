@@ -31,6 +31,11 @@ export async function eventDispatcher(event: AppEvent) {
       break
     }
 
+    case EventType.TASK_UPDATE_EVENT: {
+      await notificationQueue.add('notify', event)
+      break
+    }
+
     default: {
       throw new Error(`Unhandled event ${errorEventType}`)
     }

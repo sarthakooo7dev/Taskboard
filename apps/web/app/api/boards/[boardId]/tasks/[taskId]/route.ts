@@ -137,6 +137,14 @@ export async function PATCH(
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
       data: updateData,
+      include: {
+        assignedTo: {
+          select: { id: true, name: true, avatar: true, role: true },
+        },
+        column: {
+          select: { id: true, name: true, type: true },
+        },
+      },
     })
 
     let changeCounter = 0
@@ -279,6 +287,18 @@ export async function PATCH(
         lastActivityAt: new Date(),
       },
     })
+
+    // dispatches event for real-time task updates
+    eventDispatcher({
+      type: EventType.TASK_UPDATE_EVENT,
+      boardId,
+      creator: checkMembership.user.name,
+      info: { ...updatedTask },
+      taskId,
+      senderId: currentUserID,
+      receiverIds,
+    })
+
     return NextResponse.json(
       {
         message: 'Task updated successfully',

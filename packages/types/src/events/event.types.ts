@@ -4,6 +4,7 @@ export enum EventType {
   TASK_EDIT_STATUS = 'TASK_EDIT_STATUS',
   TASK_EDIT_METADATA = 'TASK_EDIT_METADATA',
   TASK_EDIT_GENERIC = 'TASK_EDIT_GENERIC',
+   TASK_UPDATE_EVENT = 'TASK_UPDATE_EVENT',
 }
 
 export type TaskCommentEvent_0 = {
@@ -55,6 +56,16 @@ export type TaskEditEvent_3 = {
   receiverIds: string[]
 }
 
+export type TaskEditEvent_4 = {
+  type: EventType.TASK_UPDATE_EVENT
+  boardId: string
+  creator: string
+  info: Record<string, any>
+  taskId: string
+  senderId: string
+  receiverIds: string[]
+}
+
 /**
  * Union of all events (important for type safety)
  */
@@ -64,3 +75,4 @@ export type AppEvent =
   | TaskEditEvent_1
   | TaskEditEvent_2
   | TaskEditEvent_3
+  | TaskEditEvent_4

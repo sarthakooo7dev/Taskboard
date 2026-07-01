@@ -13,3 +13,7 @@ export async function publishNotification(userId: string, data: any) {
 export async function usersViewingBoard(boardId: string) {
   return await connection.smembers(`board:${boardId}:users`)
 }
+
+export async function publishBoardEvent(boardId: string, data: any) {
+  await connection.publish(`board:${boardId}`, JSON.stringify(data))
+}

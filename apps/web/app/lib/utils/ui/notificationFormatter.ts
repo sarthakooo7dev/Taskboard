@@ -106,5 +106,18 @@ export const formatNotification = (n: Notification, userID: string) => {
         info: `${metaData.creator} commented on '${metaData.title}'`,
       }
     }
+
+    default:
+      return {
+        icon: CircleAlert,
+        bg_style: '',
+        txt_style: '',
+        time: '',
+        read: '',
+        entityId: '',
+        boardId: '',
+        boardTitle: '',
+        info: 'Unknown notification',
+      }
   }
 }
