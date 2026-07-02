@@ -18,6 +18,7 @@ import { toast } from 'sonner'
 import {
   availableStatusType,
   boardMember,
+  TaskCacheUpdate,
   TaskItem,
 } from '@/app/types/general.types'
 import Image from 'next/image'
@@ -78,7 +79,7 @@ const TaskMainComp = () => {
   })
 
   const tasks = data?.data?.tasks ?? []
-  console.log(tasks)
+
   const [visibleTasks, setVisibleTasks] = useState<TaskItem[]>(tasks)
 
   const members = membersData?.data ?? []
@@ -110,6 +111,10 @@ const TaskMainComp = () => {
 
   const updateTaskListRef = useRef(false)
   const applyFilterRef = useRef<(() => TaskItem[]) | null>(null)
+
+  const pendingUpdatesRef = useRef(new Map<string, TaskCacheUpdate>())
+  const [pendingUpdateCount, setPendingUpdateCount] = useState(0)
+  const [isSyncing, setIsSyncing] = useState(false)
 
   const handleSelectedTask = (currentTask: TaskItem, editMode?: boolean) => {
     setSelectedTask(currentTask)
@@ -162,27 +167,10 @@ const TaskMainComp = () => {
     })
 
     socket.on('task-updated', (data) => {
-      console.log('task-update', data)
+      if (data.senderId === User.id) return
 
-      console.log('tas-updarte', data.senderId, User.id)
-      if (data.senderId != User.id) {
-        const updateTaskCache = {
-          taskId: data.taskId,
-          title: data.title,
-          description: data.description,
-          columnId: data.columnId,
-          progress: data.progress,
-          assignedTo: data.assignedTo,
-          columnName: data.column.name,
-          columnType: data.column.type,
-          estimate: data.estimate,
-          Priority: data.Priority,
-        }
-        updateBoardTaskCache(queryClient, data.boardId, updateTaskCache)
-        updateTaskListRef.current = true
-        console.log('i am running')
-        console.log(queryClient.getQueryData(['board-tasks', data.boardId]))
-      }
+      pendingUpdatesRef.current.set(data.taskId, data)
+      setPendingUpdateCount(pendingUpdatesRef.current.size)
     })
 
     return () => {
@@ -190,6 +178,37 @@ const TaskMainComp = () => {
       socket.off('task-updated')
     }
   }, [User?.id, params.boardId])
+
+  const handleCacheUpdates = (data: TaskCacheUpdate) => {
+    console.log(data)
+    const updateTaskCache = {
+      taskId: data.taskId,
+      title: data.title,
+      description: data.description,
+      columnId: data.columnId,
+      progress: data.progress,
+      assignedTo: data.assignedTo,
+      columnName: data.column.name,
+      columnType: data.column.type,
+      estimate: data.estimate,
+      Priority: data.Priority,
+    }
+    updateBoardTaskCache(queryClient, data.boardId, updateTaskCache)
+    updateTaskListRef.current = true
+  }
+
+  const handleSyncUpdates = () => {
+    setIsSyncing(true)
+    for (const update of pendingUpdatesRef.current.values()) {
+      handleCacheUpdates(update)
+    }
+
+    pendingUpdatesRef.current.clear()
+    setTimeout(() => {
+      setPendingUpdateCount(0)
+      setIsSyncing(false)
+    }, 1400)
+  }
 
   const queryClient = useQueryClient()
   const deleteTaskMutation = useMutation({
@@ -240,8 +259,14 @@ const TaskMainComp = () => {
       {/* MAIN */}
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {/* INFO */}
-        <div className="m-1  p-4">
-          <InfoToolbar blockedCount={blockedCount} totalTasks={tasks.length} />
+        <div className="m-1  p-4 ">
+          <InfoToolbar
+            blockedCount={blockedCount}
+            totalTasks={tasks.length}
+            pendingUpdateCount={pendingUpdateCount}
+            handleSyncUpdates={handleSyncUpdates}
+            isSyncing={isSyncing}
+          />
         </div>
 
         {/* TOOLBAR */}

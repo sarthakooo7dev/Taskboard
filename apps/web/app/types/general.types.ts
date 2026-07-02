@@ -205,6 +205,9 @@ export interface CreateTaskFormData {
 export interface InfoToolbarProps {
   blockedCount: number
   totalTasks: number
+  pendingUpdateCount: number
+  handleSyncUpdates: () => void
+  isSyncing: boolean
 }
 
 export type WorkspaceOverviewItem = {
@@ -306,4 +309,26 @@ export type ActivityData = {
     id: string
     name: string
   }
+}
+
+export type TaskCacheUpdate = {
+  taskId: string
+  senderId: string
+  boardId: string
+
+  title: string
+  description: string
+  Priority: PriorityType
+  estimate: number
+  progress: number
+
+  columnId: string
+  column: {
+    id: string
+    name: string
+    type: TaskStatus
+  }
+
+  assignedToId: string
+  assignedTo: boardMember
 }
