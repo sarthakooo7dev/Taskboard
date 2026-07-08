@@ -90,14 +90,14 @@ export async function POST(req: Request) {
             name: 'Blocked',
             type: ColumnType.BLOCKED,
             order: 0,
-            isDefault: true,
+            isDefault: false,
           },
           {
             boardId: board.id,
             name: 'Not Started',
             type: ColumnType.NOT_STARTED,
             order: 1,
-            isDefault: false,
+            isDefault: true,
           },
           {
             boardId: board.id,
