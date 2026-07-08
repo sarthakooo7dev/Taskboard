@@ -17,6 +17,9 @@ const UserCard = () => {
   const router = useRouter()
   const { user, setUser } = useUserStore()
 
+  console.log(user)
+  console.log(user?.avatar)
+
   const mutation = useMutation({
     mutationFn: async (role: string) => {
       const res = await fetch('/api/user/me', {
@@ -96,7 +99,12 @@ const UserCard = () => {
       {/* 👤 User Card */}
       <div className="flex items-center justify-between cursor-pointer p-[6px] border-2 border-dk_border rounded-md">
         <div className="bg-purple-950 rounded-md">
-          <img className="w-9 h-9 rounded-md" src={user?.avatar} alt="image" />
+          <img
+            className="w-9 h-9 rounded-md"
+            src={user?.avatar}
+            alt="image"
+            referrerPolicy="no-referrer"
+          />
         </div>
 
         <div className="flex-1 ml-2">

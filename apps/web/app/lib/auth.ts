@@ -1,6 +1,7 @@
 import { prisma } from '@repo/db'
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 import bcrypt from 'bcrypt'
 
 export const authOptions: NextAuthOptions = {
@@ -17,8 +18,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-
         if (!credentials?.email || !credentials?.password) {
           return null
         }
@@ -40,12 +39,24 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // 6️⃣ Success → return SAFE user
+        // Success → return SAFE user
         return {
           id: user.id,
           email: user.email,
           name: user.name,
         }
+      },
+    }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
       },
     }),
   ],
@@ -54,15 +65,43 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider !== 'google') {
+        return true
+      }
+
+      let dbUser = await prisma.user.findUnique({
+        where: {
+          email: user.email!,
+        },
+      })
+
+      if (!dbUser) {
+        dbUser = await prisma.user.create({
+          data: {
+            email: user.email!,
+            name: user.name!,
+            avatar: user.image,
+            password: null,
+            provider: 'google',
+          },
+        })
+      }
+
+      // replaced userId with database id of user
+      ;(user as typeof user & { id: string }).id = dbUser.id
+      return true
+    },
     async jwt({ token, user }) {
       if (user) {
-        console.log('JWT CALLBACK HIT', token)
+        console.log('JWT CALLBACK HIT' + JSON.stringify(user) + '-----', token)
         token.id = user.id
         token.email = user.email
       }
       return token
     },
     async session({ session, token }) {
+      console.log('session', session)
       //@ts-ignore
       session.user.id = token.id
       return session

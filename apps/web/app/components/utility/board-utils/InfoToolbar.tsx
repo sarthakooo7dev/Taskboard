@@ -55,7 +55,6 @@ const InfoToolbar = ({
             </div>
           )}
         </div>
-        <div></div>
       </div>
     </div>
   )
