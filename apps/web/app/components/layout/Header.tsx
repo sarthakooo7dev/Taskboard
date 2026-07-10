@@ -31,7 +31,7 @@ const Header = () => {
   return (
     <div className="flex justify-center border-b border-b-dk_border p-2 h-[4rem] bg-dk_grey">
       <div className="flex-1 ">
-        <h2 className="text-lg font-semibold opacity-90 tracking-[1px] ">
+        <h2 className="text-lg font-semibold opacity-90 tracking-[1px] text-gray-300 ">
           {title}
         </h2>
         <p className="text-sm text-gray-400 tracking-wide w-[75ch] line-clamp-1">
