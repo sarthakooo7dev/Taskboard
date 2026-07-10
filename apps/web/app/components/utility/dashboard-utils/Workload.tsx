@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { WorkloadProps } from '@/app/types/general.types'
 import WorkloadSkeleton from '../loader-components/WorkloadSkeleton'
+import WorkloadEmpty from './Empty_state_components/WorkloadEmpty'
 
 const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
   const maxWorkload = Math.max(
@@ -36,6 +37,10 @@ const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
       <div className=" p-2  flex-1 grid grid-rows-4">
         {isLoading ? (
           <WorkloadSkeleton />
+        ) : visibleData.length == 0 ? (
+          <div className="row-span-4 flex items-center justify-center">
+            <WorkloadEmpty />
+          </div>
         ) : (
           visibleData?.map((member) => {
             const activeBars = Math.max(

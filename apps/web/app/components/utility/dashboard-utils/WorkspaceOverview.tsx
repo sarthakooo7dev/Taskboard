@@ -14,6 +14,7 @@ import { WorkspaceProps } from '@/app/types/general.types'
 import { getBoardVisual } from '@/app/lib/utils/ui/boardHelpers'
 import WorkspaceSkeleton from '../loader-components/WorkspaceSkeleton'
 import { useRouter } from 'next/navigation'
+import WorkspaceEmpty from './Empty_state_components/WorkspaceEmpty'
 
 const WorkspaceOverview = ({ workspaceData, isLoading }: WorkspaceProps) => {
   const router = useRouter()
@@ -47,6 +48,10 @@ const WorkspaceOverview = ({ workspaceData, isLoading }: WorkspaceProps) => {
       <div className="flex-1 grid grid-rows-3 p-2">
         {isLoading ? (
           <WorkspaceSkeleton />
+        ) : workspaceVisibleData.length == 0 ? (
+          <div className="row-span-4 flex items-center justify-center">
+            <WorkspaceEmpty />
+          </div>
         ) : (
           workspaceVisibleData.map((board) => {
             const { Icon } = getBoardVisual(board.id)

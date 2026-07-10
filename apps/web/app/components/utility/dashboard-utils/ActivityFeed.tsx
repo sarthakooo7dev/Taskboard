@@ -7,6 +7,7 @@ import { formatTimeAgo, statusStyles } from '@/app/lib/utils/ui/boardHelpers'
 import { useUserStore } from '@/app/store/user-store'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
+import ActivityEmpty from './Empty_state_components/ActivityEmpty'
 
 const ActivityFeed = () => {
   const { data, isLoading, isError, isFetching } = useQuery({
@@ -47,7 +48,7 @@ const ActivityFeed = () => {
           action: 'created task',
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
-              <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
+              <span className="text-gray-400">{truncateName(modifiedBy)}</span>{' '}
               created a task{' '}
               <span className="text-purple-400 text-[11px]">
                 {activity.metadata.title}
@@ -93,7 +94,7 @@ const ActivityFeed = () => {
           action: 'deleted task',
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
-              <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
+              <span className="text-gray-400">{truncateName(modifiedBy)}</span>{' '}
               deleted a task
             </p>
           ),
@@ -104,7 +105,7 @@ const ActivityFeed = () => {
           action: 'assigned task',
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
-              <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
+              <span className="text-gray-400">{truncateName(modifiedBy)}</span>{' '}
               assigned task to{' '}
               <span className="text-purple-400 text-[11px]">
                 {truncateName(activity.metadata.assignedTo ?? '')}
@@ -118,7 +119,7 @@ const ActivityFeed = () => {
           action: 'commented',
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
-              <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
+              <span className="text-gray-400">{truncateName(modifiedBy)}</span>{' '}
               added a comment on task{' '}
               <span className="text-purple-400 text-[11px]">
                 {activity.metadata.commentedOn}
@@ -132,7 +133,7 @@ const ActivityFeed = () => {
           action: activity.type,
           info: (
             <p className="tracking-wide line-clamp-2 text-[13px] leading-5 text-gray-400">
-              <span className="text-gray-300">{truncateName(modifiedBy)}</span>{' '}
+              <span className="text-gray-400">{truncateName(modifiedBy)}</span>{' '}
               performed an action
             </p>
           ),
@@ -176,6 +177,8 @@ const ActivityFeed = () => {
               </div>
             ))}
           </div>
+        ) : visibleActivityData.length == 0 ? (
+          <ActivityEmpty />
         ) : (
           <>
             {/* Timeline */}

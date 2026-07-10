@@ -108,7 +108,7 @@ const QuickInsights = ({ quickInsights, isLoading }: QuickInsightsProps) => {
                       style={{
                         transition:
                           'stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1)',
-                        filter: 'drop-shadow(0 0 8px rgba(139,111,240,0.2))',
+                        filter: 'drop-shadow(0 0 8px rgba(139,111,240,0.1))',
                       }}
                       transform={ring.transform}
                     />
