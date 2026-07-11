@@ -204,3 +204,14 @@ width:81vw
 .badge-pop {
   animation: badge-pop .35s ease-out;
 }
+
+.hero_bg {
+  background:
+    radial-gradient(ellipse at 48% 38%,
+      rgba(124, 58, 237, 0.18),
+      transparent 35%),
+    radial-gradient(ellipse at 90% 80%,
+      rgba(109, 40, 217, 0.22),
+      transparent 45%),
+    #08080c;
+}
