@@ -6,7 +6,7 @@ import LandingPage from './components/LandingPage/LandingPage'
 
 const page = async () => {
   return (
-    <div className="bd_grn flex flex-col min-h-screen">
+    <div className=" flex flex-col min-h-screen">
       <LandingPage />
     </div>
   )

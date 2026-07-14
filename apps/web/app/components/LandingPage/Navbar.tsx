@@ -1,9 +1,10 @@
 import { PlayCircle } from 'lucide-react'
 import Image from 'next/image'
+import DemoButton2 from './DemoButton2'
 
 const Navbar = () => {
   return (
-    <nav className="flex items-center justify-between px-12 py-6 ">
+    <nav className="flex items-center justify-between  px-8  md:px-12 py-4 md:py-6 ">
       {/* Logo */}
       <div className="flex items-center gap-3">
         <Image
@@ -21,10 +22,7 @@ const Navbar = () => {
 
       {/* Actions */}
       <div className="flex items-center gap-6 font-mono">
-        <button className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-300 tracking-widest transition-all duration-300 hover:text-gray-200">
-          <PlayCircle size={18} strokeWidth={1.8} className="text-violet-400" />
-          Explore Demo
-        </button>
+        <DemoButton2 />
 
         <button
           className="hidden sm:block rounded-sm border border-lg_grey  px-8 py-1 text-sm font-medium tracking-widest  text-gray-300

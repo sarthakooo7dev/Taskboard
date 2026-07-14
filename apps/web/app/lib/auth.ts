@@ -16,8 +16,20 @@ export const authOptions: NextAuthOptions = {
           placeholder: 'yourEmail@test.com',
         },
         password: { label: 'Password', type: 'password' },
+        demo: {},
       },
       async authorize(credentials, req) {
+        // Demo Login
+        if (credentials?.demo === 'true') {
+          const demoUser = await prisma.user.findUnique({
+            where: {
+              email: 'demo@klyro.com',
+            },
+          })
+
+          return demoUser
+        }
+
         if (!credentials?.email || !credentials?.password) {
           return null
         }
