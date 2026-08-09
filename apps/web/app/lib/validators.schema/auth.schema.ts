@@ -2,6 +2,7 @@ import { string, z } from 'zod'
 
 export const userCredSchema = z.object({
   body: z.object({
+    name: z.string().max(30),
     email: z.email().max(50),
     password: z.string().min(8).max(30),
     avatar: z.string(),

@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const validated = validateSchema(userCredSchema, {
       body: reqBody,
     })
-    const { email, password, avatar } = validated.body
+    const { name, email, password, avatar } = validated.body
 
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -20,23 +20,24 @@ export async function POST(req: Request) {
     })
 
     if (existingUser) {
-      return NextResponse.json({
-        message: 'User already exists !',
-      })
+      return NextResponse.json(
+        {
+          message: 'User already exists !',
+        },
+        { status: 409 },
+      )
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
-    const userName = email.split('@')[0] + ''
 
     const newUser = await prisma.user.create({
       data: {
         email,
-        name: userName,
+        name,
         password: hashedPassword,
         avatar,
       },
     })
-    console.log(newUser)
 
     if (newUser) {
       return NextResponse.json(

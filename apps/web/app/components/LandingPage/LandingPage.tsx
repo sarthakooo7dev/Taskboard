@@ -5,6 +5,7 @@ import AuthModal from '../auth/authModal'
 import { signIn } from 'next-auth/react'
 import GoogleSignInButton from './GoogleSignInButton'
 import DemoButton from './DemoButton'
+import LoginButton from './LoginButton'
 
 const LandingPage = () => {
   return (
@@ -49,10 +50,7 @@ const LandingPage = () => {
             <div className="mt-4 flex  gap-4 flex-col md:flex-row ">
               <GoogleSignInButton />
 
-              <button className="flex py-3 px-3 items-center justify-center gap-3 rounded-md tracking-wide border border-lg_grey  text-[15px]  text-gray-300 font-mono transition hover:bg-lg_grey/10">
-                <Mail className="h-5 w-5 text-zinc-300" />
-                Continue with Email
-              </button>
+              <LoginButton />
             </div>
 
             {/* Divider */}
@@ -67,7 +65,7 @@ const LandingPage = () => {
               <DemoButton />
               <div className="tracking-widest text-gray-400 text-xs pl-2 font-mono flex items-center justify-center  gap-2 ">
                 <Flame size={17} className="text-orange-400 mt-[-2px]" />{' '}
-                Everything unlocked. No sign-up.
+                Everything unlocked • No sign-up
               </div>
             </div>
           </div>

@@ -1,8 +1,13 @@
+'use client'
 import { PlayCircle } from 'lucide-react'
 import Image from 'next/image'
 import DemoButton2 from './DemoButton2'
+import { useState } from 'react'
+import AuthModal from '../auth/authModal'
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false)
+
   return (
     <nav className="flex items-center justify-between  px-8  md:px-12 py-4 md:py-6 ">
       {/* Logo */}
@@ -27,9 +32,11 @@ const Navbar = () => {
         <button
           className="hidden sm:block rounded-sm border border-lg_grey  px-8 py-1 text-sm font-medium tracking-widest  text-gray-300
          hover:bg-lg_grey/30 hover:text-gray-200"
+          onClick={() => setOpen(true)}
         >
           Log In
         </button>
+        <AuthModal open={open} onOpenChange={setOpen} />
       </div>
     </nav>
   )
