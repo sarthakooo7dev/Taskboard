@@ -76,7 +76,7 @@ const LandingPage = () => {
           {/* Right Content */}
           <div className="relative flex h-full items-start justify-center overflow-hidden pr-6 ">
             <img
-              src="/images/dash4.svg"
+              src="/images/dash5.svg"
               alt="Dashboard"
               className=" border border-violet-400/10  rounded-md object-contain [transform:perspective(1800px)_rotateY(-11deg)_rotateX(7deg)] [transform-origin:right_center]"
             />

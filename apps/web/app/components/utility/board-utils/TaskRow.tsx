@@ -191,22 +191,22 @@ const TaskRow = ({
       </div>
 
       {/* ASSIGNEE */}
-      <div className=" flex items-center justify-center">
+      <div className=" flex items-center justify-center ">
         {task.assignedTo ? (
           <Image
             src={task.assignedTo.avatar}
             alt={task.assignedTo.name}
-            width={25}
-            height={25}
+            width={35}
+            height={35}
             title={task.assignedTo.name}
             className="cursor-pointer rounded-full border border-dk_grey"
           />
         ) : (
           <div
-            className="text-purple-600 text-sm flex items-center bg-lg_grey p-[4px] rounded-full"
+            className="text-purple-600 text-sm flex items-center bg-lg_grey p-[7px] rounded-full"
             title="unassigned"
           >
-            <User2 size={16} />
+            <User2 size={20} />
           </div>
         )}
       </div>

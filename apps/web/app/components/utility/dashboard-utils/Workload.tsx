@@ -57,8 +57,8 @@ const Workload = ({ workloadData, isLoading }: WorkloadProps) => {
                 <Image
                   src={member.avatar || '/avatars/avatar1.png'}
                   alt={member.name}
-                  width={22}
-                  height={22}
+                  width={25}
+                  height={25}
                   className="rounded-full"
                 />
 

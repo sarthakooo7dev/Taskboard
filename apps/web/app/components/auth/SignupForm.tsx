@@ -1,49 +1,49 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { getRandomAvatar } from "../../lib/utils/ui/getRandomAvatar";
+import { useState } from 'react'
+import { getRandomAvatar } from '../../lib/utils/ui/getRandomAvatar'
 
 const SignupForm = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-    const avatar = getRandomAvatar();
+  const avatar = getRandomAvatar()
 
-    const handleSignup = async () => {
-        const res = await fetch("/api/signup", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password, avatar }),
-        });
-        const data = await res.json();
-        console.log(data);
-        // user CREATED here (not logged in yet)
-        if (data) {
-            alert(data);
-        }
-    };
+  const handleSignup = async () => {
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, avatar }),
+    })
+    const data = await res.json()
+    console.log(data)
+    // user CREATED here (not logged in yet)
+    if (data) {
+      alert(data)
+    }
+  }
 
-    return (
-        <>
-            <h2>Sign up</h2>
+  return (
+    <>
+      <h2>Sign up</h2>
 
-            <input
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+      <input
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-            {/* SIGNUP ACTION BUTTON */}
-            <button onClick={handleSignup}>Create account</button>
-        </>
-    );
+      {/* SIGNUP ACTION BUTTON */}
+      <button onClick={handleSignup}>Create account</button>
+    </>
+  )
 }
 
-export default SignupForm;
+export default SignupForm
