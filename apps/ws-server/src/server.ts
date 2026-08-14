@@ -15,10 +15,7 @@ const io = new Server(server, {
   },
 })
 
-const redis = new Redis({
-  host: '127.0.0.1',
-  port: 6379,
-})
+const redis = new Redis(process.env.REDIS_URL!)
 startNotificationSubscriber()
 
 io.on('connection', (socket) => {
@@ -31,7 +28,7 @@ io.on('connection', (socket) => {
 
     const users = getBoardPresence(boardId)
     io.to(boardId).emit('PRESENCE_UPDATE', users)
-    console.log(users)
+    // console.log(users)
   })
 
   socket.on('REGISTER', ({ userId }) => {
@@ -69,7 +66,8 @@ async function removeUsersToredis(boardId: string, userId: string) {
   await redis.srem(`board:${boardId}:users`, userId)
 }
 
-server.listen(4000, () => {
+const PORT = process.env.PORT || 4000
+server.listen(PORT, () => {
   console.log('Realtime server running on port 4000')
 })
 
