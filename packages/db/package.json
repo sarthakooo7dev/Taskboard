@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:push": "dotenv -e ../../.env -- prisma db push",
     "db:generate": "dotenv -e ../../.env -- prisma generate",
-    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev"
+    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev",
+    "postinstall": "prisma generate --schema=./prisma/schema.prisma"
   },
  
   "keywords": [],
