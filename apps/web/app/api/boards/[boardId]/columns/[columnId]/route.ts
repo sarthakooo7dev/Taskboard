@@ -1,4 +1,4 @@
-import { prisma } from '@repo/db'
+import { prisma, Prisma } from '@repo/db'
 import { NextResponse } from 'next/server'
 import { checkAuthorization } from '../../../../../lib/validators/user.validator'
 import { validateSchema } from '../../../../../lib/validators/schema.validator'
@@ -111,7 +111,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // Fetch default column
       const defaultColumn = await tx.boardColumn.findFirst({
         where: {
