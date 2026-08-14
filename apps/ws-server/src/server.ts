@@ -66,9 +66,9 @@ async function removeUsersToredis(boardId: string, userId: string) {
   await redis.srem(`board:${boardId}:users`, userId)
 }
 
-const PORT = process.env.PORT || 4000
-server.listen(PORT, () => {
-  console.log('Realtime server running on port 4000')
+const PORT = Number(process.env.PORT) || 4000
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Realtime server running on port ${PORT}`)
 })
 
 export { io }
