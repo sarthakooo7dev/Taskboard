@@ -4,7 +4,7 @@ import { checkBoardAccess } from '../../../../../lib/validators/membership.valid
 import { z, ZodError } from 'zod'
 import { validateSchema } from '../../../../../lib/validators/schema.validator'
 import { roleSchema } from '../../../../../lib/validators.schema/auth.schema'
-import { prisma } from '@repo/db'
+import { prisma, Prisma } from '@repo/db'
 
 export async function PATCH(
   req: Request,
@@ -35,7 +35,7 @@ export async function PATCH(
 
     // update user role
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const targetMembership = await tx.boardMember.findUnique({
         where: {
           boardId_userId: {
@@ -155,7 +155,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const targetMembership = await tx.boardMember.findUnique({
         where: {
           boardId_userId: {
