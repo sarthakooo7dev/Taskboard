@@ -4,7 +4,7 @@ import { checkAuthorization } from '@/app/lib/validators/user.validator'
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { notificationId: string } },
+  { params }: { params: Promise<{ notificationId: string }> },
 ) {
   try {
     const session = await checkAuthorization()

@@ -11,7 +11,7 @@ import { eventDispatcher } from '@repo/db'
 
 export async function GET(
   req: Request,
-  { params }: { params: { boardId: string; taskId: string } },
+  { params }: { params: Promise<{ boardId: string; taskId: string }> },
 ) {
   try {
     const session = await checkAuthorization()
@@ -81,7 +81,7 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { boardId: string; taskId: string } },
+  { params }: { params: Promise<{ boardId: string; taskId: string }> },
 ) {
   try {
     const session = await checkAuthorization()

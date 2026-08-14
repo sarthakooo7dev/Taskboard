@@ -9,7 +9,7 @@ import { activityService } from '../../../../services/activity.service'
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ boardId: string; columnId: string }> },
+  { params }: { params: Promise<{ boardId: string }> },
 ) {
   try {
     const session = await checkAuthorization()

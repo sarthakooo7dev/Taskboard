@@ -345,7 +345,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { boardId: string; taskId: string } },
+  { params }: { params: Promise<{ boardId: string; taskId: string }> },
 ) {
   try {
     const session = await checkAuthorization()

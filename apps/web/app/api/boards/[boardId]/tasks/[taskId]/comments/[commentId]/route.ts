@@ -7,7 +7,9 @@ export async function DELETE(
   req: Request,
   {
     params,
-  }: { params: { boardId: string; taskId: string; commentId: string } },
+  }: {
+    params: Promise<{ boardId: string; taskId: string; commentId: string }>
+  },
 ) {
   try {
     const session = await checkAuthorization()

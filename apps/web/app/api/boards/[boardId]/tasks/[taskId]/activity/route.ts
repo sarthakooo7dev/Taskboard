@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   req: Request,
-  { params }: { params: { boardId: string; taskId: string } },
+  { params }: { params: Promise<{ boardId: string; taskId: string }> },
 ) {
   try {
     const session = await checkAuthorization()
