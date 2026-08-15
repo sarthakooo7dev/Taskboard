@@ -11,6 +11,11 @@ serverAdapter.setBasePath('/queues')
 createBullBoard({
   queues: [new BullMQAdapter(notificationQueue), new BullMQAdapter(pushQueue)],
   serverAdapter,
+  options: {
+    uiConfig: {
+      hideRedisDetails: true,
+    },
+  },
 })
 
 export { serverAdapter }

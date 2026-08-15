@@ -43,3 +43,5 @@ export const notificationWorker = new Worker(
     connection,
   },
 )
+
+console.log('🚀 InAPPNotification Worker running')
