@@ -23,14 +23,35 @@ export async function GET() {
 }
 
 export async function POST() {
-  await notificationQueue.add('test', {
-    msg: 'hello queue from route',
-  })
+  console.log('🟡 POST: started')
 
-  return NextResponse.json(
-    {
+  try {
+    console.log('🟡 POST: adding job...')
+
+    const job = await Promise.race([
+      notificationQueue.add('test', {
+        msg: 'hello queue from route',
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('QUEUE_ADD_TIMEOUT')), 5000),
+      ),
+    ])
+
+    console.log('🟢 POST: job added', job.id)
+
+    return NextResponse.json({
       message: 'test ok',
-    },
-    { status: 200 },
-  )
+      jobId: job.id,
+    })
+  } catch (error) {
+    console.error('🔴 POST: queue failed', error)
+
+    return NextResponse.json(
+      {
+        message: 'queue failed',
+        error: String(error),
+      },
+      { status: 500 },
+    )
+  }
 }
